@@ -11,28 +11,31 @@
 	$mobile				= 	'';
 	$address			= 	'';
 
+	$username			=	'';
+
 	if($this->mysession->get('post')!=NULL || $values!=false){
 	
-	if($this->mysession->get('post')!=NULL){
-	$data						=	$this->mysession->get('post');//print_r($data);
-	if(isset($data['customer_id'])){
-	$customer_id = $data['customer_id'];
-	}
+		if($this->mysession->get('post')!=NULL){
+			$data		= $this->mysession->get('post');//print_r($data);
+			if(isset($data['customer_id'])){
+				$customer_id = $data['customer_id'];
+			}
 	
-	}else if($values!=false){
-	$data =$values;
-	$customer_id = $data['id'];
+		}else if($values!=false){
+			$data =$values;
+			$customer_id = $data['id'];
 	
-	}
-	$name				=	$data['name'];	
-	$dob				=	$data['dob'];
-	$customer_group_id		= 	$data['customer_group_id'];
-	if($customer_group_id==gINVALID){$customer_group_id		='';}
-	$customer_type_id		= 	$data['customer_type_id'];
-	if($customer_type_id==gINVALID){$customer_type_id		='';}
-	$email				= 	$data['email'];
-	$mobile				= 	$data['mobile'];
-	$address			= 	$data['address'];
+		}
+		$name				=	$data['name'];	
+		$dob				=	$data['dob'];
+		$customer_group_id		= 	$data['customer_group_id'];
+		if($customer_group_id==gINVALID){$customer_group_id		='';}
+		$customer_type_id		= 	$data['customer_type_id'];
+		if($customer_type_id==gINVALID){$customer_type_id		='';}
+		$email				= 	$data['email'];
+		$mobile				= 	$data['mobile'];
+		$address			= 	$data['address'];
+		$username			=	$data['username'];
 	}
 	$this->mysession->delete('post');
 ?>
@@ -158,18 +161,52 @@
 				   $class="form-control customer-type";
 					echo $this->form_functions->populate_dropdown('customer_type_id',$customer_types,$customer_type_id,$class,$id='',$msg="Select Customer type");?> 
 				</div>
-			</div>
-			<div class="div-with-50-percent-width-with-margin-10">
 				<div class="form-group">
 					<?php echo form_label('Customer Group','cgrouplabel'); ?>
 				   <?php echo $this->form_functions->populate_dropdown('customer_group_id',$customer_groups,$customer_group_id,$class ='form-control',$id='',$msg="Select Groups"); ?>
 					
 				</div>
+			</div>
+			<div class="div-with-50-percent-width-with-margin-10">
+				
 				<div class="form-group">
 					<?php echo form_label('Address','addresslabel'); ?>
-				    <?php echo form_textarea(array('name'=>'address','class'=>'form-control','placeholder'=>'Enter Address','value'=>$address)); ?>
+				    <?php echo form_textarea(array('name'=>'address','class'=>'form-control','placeholder'=>'Enter Address','value'=>$address,'rows'=>4)); ?>
 					<?php echo form_error('address', '<p class="text-red">', '</p>'); ?>
 				</div>
+
+				<?php if($customer_id!='' && $customer_id>gINVALID){?>
+				<div class="form-group">
+				   <?php echo form_label('Username','usernamelabel');
+					
+					echo form_input(array('name'=>'username','class'=>'form-control','id'=>'username','placeholder'=>'Enter Username','value'=>$username,'disabled'=>''));
+				   ?>			
+				  <?php echo $this->form_functions->form_error_session('username', '<p class="text-red">', '</p>'); ?>
+				</div>
+					
+				<?php }else{?>
+			
+				<div class="form-group">
+				   <?php echo form_label('Username','usernamelabel');
+					
+					echo form_input(array('name'=>'username','class'=>'form-control','id'=>'username','placeholder'=>'Enter Username','value'=>$username));
+				   ?>			
+				   <?php echo $this->form_functions->form_error_session('username', '<p class="text-red">', '</p>'); ?>
+				</div>
+
+				<div class="form-group">
+				   <?php echo form_label('Password','passwordlabel'); ?>
+				   <?php echo form_password(array('name'=>'password','class'=>'form-control','id'=>'password','placeholder'=>'Enter Password','value'=>$password)); ?>			
+					<?php echo $this->form_functions->form_error_session('password', '<p class="text-red">', '</p>'); ?>
+				</div>
+				
+				<div class="form-group">
+				   <?php echo form_label('Confirm Password','cpasswordlabel'); ?>
+				   <?php echo form_password(array('name'=>'cpassword','class'=>'form-control','id'=>'cpassword','placeholder'=>'Enter Confirm password')); ?>			
+					<?php echo $this->form_functions->form_error_session('cpassword', '<p class="text-red">', '</p>'); ?>
+				</div>
+				<?php }?>
+
 		   		<div class="box-footer">
 				<?php if($customer_id!='' && $customer_id>gINVALID){ $save_update_button='UPDATE';$class_save_update_button="class='btn btn-primary'"; }else{ $save_update_button='SAVE';$class_save_update_button="class='btn btn-success'"; }?>
 				<?php echo form_submit("customer-add-update",$save_update_button,$class_save_update_button).nbs(2).form_reset("customer_reset","RESET","class='btn btn-danger'"); ?> 

@@ -17,7 +17,7 @@ $def_coy - the default company that is pre-selected on login
 
 $def_coy = 0;
 
-$tb_pref_counter = 17;
+$tb_pref_counter = 18;
 
 $db_connections = array (
   0 => 
@@ -29,6 +29,14 @@ $db_connections = array (
     'dbname' => 'cc2',
     'tbpref' => '0_',
   ),
-  
+  2 => 
+  array (
+    'name' => 'CONNECTNCABS',
+    'host' => 'localhost',
+    'dbuser' => 'root',
+    'dbpassword' => 'mysql@local',
+    'dbname' => 'cc2',
+    'tbpref' => '2_',
+  ),
 );
 ?>
