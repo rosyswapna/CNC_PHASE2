@@ -751,8 +751,10 @@ class User extends CI_Controller {
 		
 		
 			if($param2!=''){
-				$condition=array('id'=>$param2);
-				$result=$this->customers_model->getCustomerDetails($condition);
+				//$condition=array('id'=>$param2);
+				//$result=$this->customers_model->getCustomerDetails($condition);
+				$result=$this->customers_model->getCustomerUser($param2);
+
 				$pagedata['id']=$result[0]['id'];
 				$pagedata['name']=$result[0]['name'];
 				$pagedata['email']=$result[0]['email'];
@@ -761,6 +763,7 @@ class User extends CI_Controller {
 				$pagedata['address']=$result[0]['address'];
 				$pagedata['customer_group_id']=$result[0]['customer_group_id'];
 				$pagedata['customer_type_id']=$result[0]['customer_type_id'];
+				$pagedata['username']=$result[0]['username'];
 			}
 			$tbl_arry=array('customer_types','customer_groups');
 			

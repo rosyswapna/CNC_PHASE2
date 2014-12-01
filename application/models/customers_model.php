@@ -3,12 +3,21 @@ class Customers_model extends CI_Model {
 	
 	
 	public function getCustomerDetails($data){ 
-	//$this->db->select('id,name,email,mobile');
-	$this->db->from('customers');
-	if($data!=''){
-		$this->db->where($data);
+		$this->db->from('customers');
+		if($data!=''){
+			$this->db->where($data);
+		}
+		return $this->db->get()->result_array();
+	
 	}
-	return $this->db->get()->result_array();
+
+	public function getCustomerUser($cust_id){ 
+		$this->db->select('customers.*,users.username');
+		$this->db->from('customers');
+		$this->db->join('users', 'customers.login_id = users.id','left');
+		$this->db->where('customers.id',$cust_id);
+		
+		return $this->db->get()->result_array();
 	
 	}
 

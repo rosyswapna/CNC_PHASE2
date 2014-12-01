@@ -1,66 +1,69 @@
 <?php 
 class Customers extends CI_Controller {
 	public function __construct()
-		{
+	{
 		parent::__construct();
 		$this->load->model("customers_model");
 		$this->load->helper('my_helper');
 		no_cache();
 
-		}
-	public function index($param1 ='',$param2='',$param3=''){
-		if($this->session_check()==true) {
-		if($param1=='customer-check') {
-			
-			$this->checkCustomer();
-				
-		}else if($param1=='add-customer') {
-			
-			$this->addCustomer();
-				
-		}else if($param1=='AddUpdate') {
-			
-			$this->Customer();
-				
-		}else if($param1=='importToFa'){
-		 $this->importToFa();
-		}else if($param1=='CustomersById'){
-		 $this->CustomersById();
-		}
-		else{
+	}
 
-			$this->notFound();
-		}
-		
-	}else{
-			$this->notAuthorized();
-	}
-	}
-	
-		public function notFound(){
+	public function index($param1 ='',$param2='',$param3=''){
+
 		if($this->session_check()==true) {
-		 $this->output->set_status_header('404'); 
-		 $data['title']="Not Found";
-      	 $page='not_found';
-         $this->load_templates($page,$data);
+			if($param1=='customer-check') {
+			
+				$this->checkCustomer();
+				
+			}else if($param1=='add-customer') {
+			
+				$this->addCustomer();
+				
+			}else if($param1=='AddUpdate') {
+			
+				$this->Customer();
+				
+			}else if($param1=='importToFa'){
+			 	$this->importToFa();
+			}else if($param1=='CustomersById'){
+			 	$this->CustomersById();
+			}
+			else{
+
+				$this->notFound();
+			}
+		
 		}else{
 			$this->notAuthorized();
+		}
 	}
+	
+	public function notFound(){
+		if($this->session_check()==true) {
+			$this->output->set_status_header('404'); 
+			$data['title']="Not Found";
+	      	 	$page='not_found';
+		 	$this->load_templates($page,$data);
+		}else{
+			$this->notAuthorized();
+		}
 	}
 		
 	
 	public function load_templates($page='',$data=''){
-	if($this->session_check()==true) {
-		$this->load->view('admin-templates/header',$data);
-		$this->load->view('admin-templates/nav');
-		$this->load->view($page,$data);
-		$this->load->view('admin-templates/footer');
-		}
-	else{
+		if($this->session_check()==true) {
+			$this->load->view('admin-templates/header',$data);
+			$this->load->view('admin-templates/nav');
+			$this->load->view($page,$data);
+			$this->load->view('admin-templates/footer');
+			}
+		else{
 			$this->notAuthorized();
 		}
 	}
-		public function checkCustomer(){
+
+	public function checkCustomer(){
 		if(isset($_REQUEST['mobile']) && $_REQUEST['mobile']!=''){
 			$data['mobile']=$_REQUEST['mobile'];
 		}
@@ -80,9 +83,9 @@ class Customers extends CI_Controller {
 		echo false;
 		}
 		
-}
+	}
 
-		public function addCustomer(){
+	public function addCustomer(){
 		if(isset($_REQUEST['mobile']) || $_REQUEST['mobile']!=''  && isset($_REQUEST['name']) && $_REQUEST['name']!='' && isset($_REQUEST['c_group']) && $_REQUEST['c_group']!=''){
 			$data['mobile']=$_REQUEST['mobile'];
 			$data['email']=$_REQUEST['email'];
