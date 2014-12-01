@@ -61,7 +61,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// Main Title
 	$app_title = "ACCOUNTS";
 
-	$cnc_url = "http://cc.local/";
+	$cnc_url = "http://cc2.local/";
 
 	// Build for development purposes
 	$build_version 	= date("d.m.Y", filemtime("$path_to_root/CHANGELOG.txt"));

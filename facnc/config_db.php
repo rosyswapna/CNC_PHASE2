@@ -26,44 +26,9 @@ $db_connections = array (
     'host' => 'localhost',
     'dbuser' => 'root',
     'dbpassword' => 'mysql@local',
-    'dbname' => 'connectncabs',
+    'dbname' => 'cc2',
     'tbpref' => '0_',
   ),
-  1 => 
-  array (
-    'name' => 'TALC1',
-    'host' => 'localhost',
-    'dbuser' => 'root',
-    'dbpassword' => 'mysql@local',
-    'dbname' => 'connectncabs',
-    'tbpref' => '1_',
-  ),
-  2 => 
-  array (
-    'name' => 'CONNECTNCABS',
-    'host' => 'localhost',
-    'dbuser' => 'root',
-    'dbpassword' => 'mysql@local',
-    'dbname' => 'connectncabs',
-    'tbpref' => '2_',
-  ),
-  4 => 
-  array (
-    'name' => 'testcoy',
-    'host' => 'localhost',
-    'dbuser' => 'root',
-    'dbpassword' => 'mysql@local',
-    'dbname' => 'connectncabs',
-    'tbpref' => '4_',
-  ),
-  3 => 
-  array (
-    'name' => 'acubeinnovations',
-    'host' => 'localhost',
-    'dbuser' => 'root',
-    'dbpassword' => 'mysql@local',
-    'dbname' => 'connectncabs',
-    'tbpref' => '3_',
-  ),
+  
 );
 ?>
