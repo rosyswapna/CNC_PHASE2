@@ -221,7 +221,19 @@
                             </ul>
                         </li>
 
-                        <?php } ?>
+			<?php }else if($this->session->userdata('isLoggedIn')==true && $this->session->userdata('type')==CUSTOMER){ ?>
+                        <li>
+                            <a href="<?php echo base_url().'customer/dashboard';?>">
+                                <i class="fa fa-home"></i> <span> Dashboard </span>
+                            </a>
+                        </li>
+
+			<li>
+			    <a href="<?php echo base_url().'customer/profile';?>">
+				<i class="fa fa-angle-double-right"></i>Manage Profile
+			    </a>
+			</li>
+			<?php } ?>
                         
                     </ul>
                 </section>

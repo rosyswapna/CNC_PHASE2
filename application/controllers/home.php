@@ -9,7 +9,6 @@ class Home extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->model("login_model");
 		//no_cache();
 
 	}
@@ -25,7 +24,6 @@ class Home extends CI_Controller {
 			}
 		}else{
 			$data['title']="Login | ".PRODUCT_NAME;	
-			$data['user_types'] = $this->login_model->getUserTypes();
 			//$this->load->view('organization-pages/login',$data);
 			//redirect(base_url().'organization/login');
 

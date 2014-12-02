@@ -38,14 +38,7 @@
 				
                     </div>  
 
-		    <div class="form-group">
-			 <?php 
-			$class="form-control";
-			echo $this->form_functions->populate_dropdown('user_type',$user_types,'',$class,$id='',$msg="Select User Type");
-			echo form_error('user_type','<p class="text-red">', '</p>'); ?>	
-
-			
-                    </div> 
+		    
 
 		  
 		    <?php  if( $this->session->userdata('isloginAttemptexceeded')==true){  ?>     

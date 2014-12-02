@@ -39,7 +39,7 @@ class Login extends CI_Controller {
 
 			redirect(base_url().'customer/dashboard');
 
-		}elseif(isset($_REQUEST['username']) && isset($_REQUEST['password']) && isset($_REQUEST['user_type']))
+		}elseif(isset($_REQUEST['username']) && isset($_REQUEST['password']))
 		{
 
 			 
@@ -54,14 +54,13 @@ class Login extends CI_Controller {
 			 	$this->form_validation->set_rules('username','Username','trim|required|min_length[3]|max_length[20]|xss_clean');
 			 	$this->form_validation->set_rules('password','Password','trim|required|min_length[3]|max_length[20]|xss_clean');
 			}
-			$this->form_validation->set_rules('user_type','User Type','trim|required');
+			
 
 			 if($this->form_validation->run()!=False){
 			 	$username = $this->input->post('username');
 		   	 	$pass  = $this->input->post('password');
-				$user_type  = $this->input->post('user_type');
 
-		     		if( $username && $pass && $this->login_model->Login($username,$pass,$user_type)) {
+		     		if( $username && $pass && $this->login_model->Login($username,$pass)) {
 				 	if($this->session->userdata('loginAttemptcount') > 1){
 		       	 			$this->login_model->clearLoginAttempts($username);
 					 }
@@ -105,8 +104,7 @@ class Login extends CI_Controller {
 	}
 
 	public function show_login() 
-	{   	$data['title']="Login | ".PRODUCT_NAME;
-		$data['user_types'] = $this->login_model->getUserTypes();	
+	{   	$data['title']="Login | ".PRODUCT_NAME;	
 		$this->load->view('access/login',$data);
 		
     	}

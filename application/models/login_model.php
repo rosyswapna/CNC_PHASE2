@@ -35,12 +35,11 @@ class Login_model extends CI_Model {
 
 
 	//customer login with username and password
-	function Login( $username, $password,$type ) {
+	function Login( $username, $password) {
 	
 		$filter = array(
 				'username' => $username,
 				'password' => md5($password),
-				'user_type_id' => $type
 				);
 
         	$this->db->from('users');
@@ -78,6 +77,13 @@ class Login_model extends CI_Model {
 			'isLoggedIn'=>true,
 			'token_pass' =>$this->details->password
 			));
+
+		if($this->details->user_type_id == CUSTOMER){
+			$this->db->from('customers');
+        		$this->db->where('login_id', $this->details->id);
+        		$customer = $this->db->get()->result();
+			$this->session->set_userdata('customer',$customer[0]);
+		}
 	}
 
 	function clearLoginAttempts($username){
