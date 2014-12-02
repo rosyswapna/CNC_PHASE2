@@ -54,5 +54,8 @@ $route['trip-booking/(:any)'] = 'trip_booking/index/$0';
 $route['customers/(:any)'] = 'customers/$0';
 $route['maps/(:any)'] = 'maps/$0';
 
+$route['login/(:any)'] = 'login/$0';
+
+
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

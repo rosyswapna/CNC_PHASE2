@@ -6,19 +6,30 @@ class Home extends CI_Controller {
 	 * Index Page for this controller.
 	 
 	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->model("login_model");
+		//no_cache();
+
+	}
+
 	public function index()
 	{	if( $this->session->userdata('isLoggedIn') ) {
-		if( $this->session->userdata('type')==SYSTEM_ADMINISTRATOR){
-			redirect(base_url().'admin');
-		}else if($this->session->userdata('type')==ORGANISATION_ADMINISTRATOR){
-			redirect(base_url().'organization/admin');
-		}else if($this->session->userdata('type')==FRONT_DESK){
-			 redirect(base_url().'organization/front-desk');
-		}
+			if( $this->session->userdata('type')==SYSTEM_ADMINISTRATOR){
+				redirect(base_url().'admin');
+			}else if($this->session->userdata('type')==ORGANISATION_ADMINISTRATOR){
+				redirect(base_url().'organization/admin');
+			}else if($this->session->userdata('type')==FRONT_DESK){
+				 redirect(base_url().'organization/front-desk');
+			}
 		}else{
-		$data['title']="Login | ".PRODUCT_NAME;	
-		$this->load->view('organization-pages/login',$data);
-		//redirect(base_url().'organization/login');
+			$data['title']="Login | ".PRODUCT_NAME;	
+			$data['user_types'] = $this->login_model->getUserTypes();
+			//$this->load->view('organization-pages/login',$data);
+			//redirect(base_url().'organization/login');
+
+			$this->load->view('access/login',$data);
 		}
 	}
 }
