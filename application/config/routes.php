@@ -57,5 +57,11 @@ $route['maps/(:any)'] = 'maps/$0';
 $route['login/(:any)'] = 'login/$0';
 
 
+$route['customer/(:any)'] = 'customer/index';
+
+
+
+
+
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */
