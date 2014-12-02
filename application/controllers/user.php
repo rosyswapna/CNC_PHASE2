@@ -23,76 +23,89 @@ class User extends CI_Controller {
 		} else {
 		return false;
 		}
-	}   
+	}  
+
+	public function customer_session_check() {
+		if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==CUSTOMER)) {
+			return true;
+		} else {
+			return false;
+		}
+	}    
 	public function index(){
 		$param1=$this->uri->segment(3);
 		$param2=$this->uri->segment(4);
 		$param3=$this->uri->segment(5);
-        if($this->session_check()==true) {
-		if($param1==''){
-			$data['title']="Home | ".PRODUCT_NAME;    
-       			 $page='user-pages/user_home';
-			$this->load_templates($page,$data);
-		}elseif($param1=='profile'){
-		$this->profile();
-		}elseif($param1=='changepassword'){
-		$this->changePassword();
-		}
-		elseif($param1=='settings'){
-		$this->settings();
-		}elseif($param1=='trip-booking'){
+        	if($this->session_check()==true) {
+			if($param1==''){
+				$data['title']="Home | ".PRODUCT_NAME;    
+	       			 $page='user-pages/user_home';
+				$this->load_templates($page,$data);
+			}elseif($param1=='profile'){
+			$this->profile();
+			}elseif($param1=='changepassword'){
+			$this->changePassword();
+			}
+			elseif($param1=='settings'){
+			$this->settings();
+			}elseif($param1=='trip-booking'){
 
-		$this->ShowBookTrip($param2);
-		}elseif($param1=='trips'){
+			$this->ShowBookTrip($param2);
+			}elseif($param1=='trips'){
 
-		$this->Trips($param2);
-		}elseif($param1=='customer'){
+			$this->Trips($param2);
+			}elseif($param1=='customer'){
 
-		$this->Customer($param2);
+			$this->Customer($param2);
 
-		}elseif($param1=='customers'){
+			}elseif($param1=='customers'){
 
-		$this->Customers($param2);
+			$this->Customers($param2);
 
-		}elseif($param1=='device'){
+			}elseif($param1=='device'){
 
-		$this->Device($param2);
+			$this->Device($param2);
 
-		}elseif($param1=='setup_dashboard'){
+			}elseif($param1=='setup_dashboard'){
 
-		$this->setup_dashboard();
+			$this->setup_dashboard();
 
-		}elseif($param1=='getNotifications'){
-			$this->getNotifications();
-		}elseif($param1=='tripvouchers'){
-			$this->tripVouchers($param2);
-		}
+			}elseif($param1=='getNotifications'){
+				$this->getNotifications();
+			}elseif($param1=='tripvouchers'){
+				$this->tripVouchers($param2);
+			}
 
-		elseif($param1=='tarrif-masters'&& ($param2== ''|| is_numeric($param2))){
-		$this->tarrif_masters($param1,$param2);
-		}elseif($param1=='tarrif'&& ($param2== ''|| is_numeric($param2))){
-		$this->tarrif($param1,$param2);
+			elseif($param1=='tarrif-masters'&& ($param2== ''|| is_numeric($param2))){
+			$this->tarrif_masters($param1,$param2);
+			}elseif($param1=='tarrif'&& ($param2== ''|| is_numeric($param2))){
+			$this->tarrif($param1,$param2);
 
-		}
-		elseif($param1=='driver'){
+			}
+			elseif($param1=='driver'){
 
-		$this->ShowDriverView($param2);
-		}elseif($param1=='list-driver'&&($param2== ''|| is_numeric($param2))){
-		$this->ShowDriverList($param1,$param2);
-		}elseif($param1=='driver-profile'&&($param2== ''|| is_numeric($param2))){
-		$this->ShowDriverProfile($param1,$param2);
-		}
-		elseif($param1=='vehicle' && ($param2!= ''|| is_numeric($param2)||$param2== '') &&($param3== ''|| is_numeric($param3))){
+			$this->ShowDriverView($param2);
+			}elseif($param1=='list-driver'&&($param2== ''|| is_numeric($param2))){
+			$this->ShowDriverList($param1,$param2);
+			}elseif($param1=='driver-profile'&&($param2== ''|| is_numeric($param2))){
+			$this->ShowDriverProfile($param1,$param2);
+			}
+			elseif($param1=='vehicle' && ($param2!= ''|| is_numeric($param2)||$param2== '') &&($param3== ''|| is_numeric($param3))){
 
-		$this->ShowVehicleView($param1,$param2,$param3);
-		}
+			$this->ShowVehicleView($param1,$param2,$param3);
+			}
 		
-		elseif($param1=='list-vehicle'&&($param2== ''|| is_numeric($param2)) && ($param3== ''|| is_numeric($param3))){
-		$this->ShowVehicleList($param1,$param2,$param3);
-		}else{
-			$this->notFound();
+			elseif($param1=='list-vehicle'&&($param2== ''|| is_numeric($param2)) && ($param3== ''|| is_numeric($param3))){
+			$this->ShowVehicleList($param1,$param2,$param3);
+			}else{
+				$this->notFound();
+			}
+		}elseif($this->customer_session_check()==true && $param1=='trip-booking') {
+			
+			$this->ShowBookTrip($param2);
+			
 		}
-		}else{
+		else{
 			$this->notAuthorized();
 		}
 	
@@ -372,191 +385,178 @@ class User extends CI_Controller {
 
 
 
-
+	//trip booking from front-desk and customer
 	public function ShowBookTrip($trip_id =''){
-	if($this->session_check()==true) {
+
+		if($this->session_check() == true || $this->customer_session_check()==true) {
+
+			if($this->customer_session_check() == true){
+				$data['booking_by'] = 'customer';
+			}else{
+				$data['booking_by'] = 'organization ';
+			}
 	
-	//echo $this->session->userdata('organisation_id');
-	$tbl_arry=array('booking_sources','available_drivers','available_vehicles','trip_models','vehicle_types','vehicle_models','vehicle_makes','vehicle_ac_types','vehicle_fuel_types','vehicle_seating_capacity','vehicle_beacon_light_options','languages','payment_type','customer_types','customer_groups');
+			//echo $this->session->userdata('organisation_id');
+			$tbl_arry=array('booking_sources','available_drivers','available_vehicles','trip_models','vehicle_types','vehicle_models','vehicle_makes','vehicle_ac_types','vehicle_fuel_types','vehicle_seating_capacity','vehicle_beacon_light_options','languages','payment_type','customer_types','customer_groups');
 	
-	for ($i=0;$i<count($tbl_arry);$i++){
-	$result=$this->user_model->getArray($tbl_arry[$i]);
-	if($result!=false){
-	$data[$tbl_arry[$i]]=$result;
-	}
-	else{
-	$data[$tbl_arry[$i]]='';
-	}
-	}//echo date('Y-m-d H:i');
-	$conditon =array('trip_status_id'=>TRIP_STATUS_PENDING,'CONCAT(pick_up_date," ",pick_up_time) >='=>date('Y-m-d H:i'),'organisation_id'=>$this->session->userdata('organisation_id'));
-	$orderby = ' CONCAT(pick_up_date,pick_up_time) ASC';
-	$data['notification']=$this->trip_booking_model->getDetails($conditon,$orderby);
-	$data['customers_array']=$this->customers_model->getArray();
-	$data['tariffs']='';
-	if($trip_id!='' && $trip_id > 0) {
-	$conditon = array('id'=>$trip_id,'organisation_id'=>$this->session->userdata('organisation_id'));
-	$result=$this->trip_booking_model->getDetails($conditon);
-	$result=$result[0];
-	if($result->trip_status_id==TRIP_STATUS_PENDING || $result->trip_status_id==TRIP_STATUS_CONFIRMED){
+			for ($i=0;$i<count($tbl_arry);$i++){
+				$result=$this->user_model->getArray($tbl_arry[$i]);
+				if($result!=false){
+					$data[$tbl_arry[$i]]=$result;
+				}
+				else{
+					$data[$tbl_arry[$i]]='';
+				}
+			}//echo date('Y-m-d H:i');
+
+			$conditon =array('trip_status_id'=>TRIP_STATUS_PENDING,'CONCAT(pick_up_date," ",pick_up_time) >='=>date('Y-m-d H:i'),'organisation_id'=>$this->session->userdata('organisation_id'));
+			$orderby = ' CONCAT(pick_up_date,pick_up_time) ASC';
+			$data['notification']=$this->trip_booking_model->getDetails($conditon,$orderby);
+			$data['customers_array']=$this->customers_model->getArray();
+			$data['tariffs']='';
+
+			if($trip_id!='' && $trip_id > 0) {
+				$conditon = array('id'=>$trip_id,'organisation_id'=>$this->session->userdata('organisation_id'));
+				$result=$this->trip_booking_model->getDetails($conditon);
+				$result=$result[0];
+				if($result->trip_status_id==TRIP_STATUS_PENDING || $result->trip_status_id==TRIP_STATUS_CONFIRMED){
 		
-	$data1['trip_id']=$result->id;
-	$data1['recurrent_continues']='';
-	$data1['recurrent_alternatives']='';
-	if(isset($result->customer_group_id) && $result->customer_group_id > 0){
-		$data1['advanced']=TRUE;
-		$data1['customer_group']=$result->customer_group_id;
-	}else{
-		$data1['advanced']='';
-		$data1['customer_group']='';
-	}
+					$data1['trip_id']=$result->id;
+					$data1['recurrent_continues']='';
+					$data1['recurrent_alternatives']='';
+					if(isset($result->customer_group_id) && $result->customer_group_id > 0){
+						$data1['advanced']=TRUE;
+						$data1['customer_group']=$result->customer_group_id;
+					}else{
+						$data1['advanced']='';
+						$data1['customer_group']='';
+					}
 
 	
-	if(isset($result->guest_id) && $result->guest_id > 0){
-	$dbdata=array('id'=>$result->guest_id);
-	$guest 	=	$this->customers_model->getCustomerDetails($dbdata);
-	$guest 	=$guest[0];
-	$data1['guest_id']	= $result->guest_id;
-	$data1['guest']	=	TRUE;
-	$data1['guestname']=	$guest['name'];
-	$data1['guestemail']=$guest['email'];
-	$data1['guestmobile']=$guest['mobile'];
-	}else{
-	$data1['guest']='';
-	$data1['guestname']='';
-	$data1['guestemail']='';
-	$data1['guestmobile']='';
-	}
+					if(isset($result->guest_id) && $result->guest_id > 0){
+						$dbdata=array('id'=>$result->guest_id);
+						$guest 	=	$this->customers_model->getCustomerDetails($dbdata);
+						$guest 	=$guest[0];
+						$data1['guest_id']	= $result->guest_id;
+						$data1['guest']	=	TRUE;
+						$data1['guestname']=	$guest['name'];
+						$data1['guestemail']=$guest['email'];
+						$data1['guestmobile']=$guest['mobile'];
+					}else{
+						$data1['guest']='';
+						$data1['guestname']='';
+						$data1['guestemail']='';
+						$data1['guestmobile']='';
+					}
 	
-	$dbdata=array('id'=>$result->customer_id);	
-	$customer 	=	$this->customers_model->getCustomerDetails($dbdata);
-	if(count($customer)>0){
-	$customer=$customer[0];
-	$data1['customer']				=	$customer['name'];
-	$data1['new_customer']			=	'false';
-	$data1['email']					=	$customer['email'];
-	$data1['mobile']				=	$customer['mobile'];
+					$dbdata=array('id' => $result->customer_id);	
+					$customer 	= $this->customers_model->getCustomerDetails($dbdata);
+					if(count($customer)>0){
+						$customer=$customer[0];
+						$data1['customer']		= $customer['name'];
+						$data1['new_customer']		= 'false';
+						$data1['email']			= $customer['email'];
+						$data1['mobile']		= $customer['mobile'];
 	
-	$this->session->set_userdata('customer_id',$result->customer_id);
-	$this->session->set_userdata('customer_name',$customer['name']);
-	$this->session->set_userdata('customer_email',$customer['email']);
-	$this->session->set_userdata('customer_mobile',$customer['mobile']);
-	}else{
-	
-	$data1['customer']				=	'';
-	$data1['new_customer']			=	'true';
-	$data1['email']					=	'';
-	$data1['mobile']				=	'';
+						$this->session->set_userdata('customer_id',$result->customer_id);
+						$this->session->set_userdata('customer_name',$customer['name']);
+						$this->session->set_userdata('customer_email',$customer['email']);
+						$this->session->set_userdata('customer_mobile',$customer['mobile']);
+					}else{
+						$data1['customer']			= '';
+						$data1['new_customer']			= 'true';
+						$data1['email']				= '';
+						$data1['mobile']			= '';
 
-	}
-	$data1['booking_source']			=	$result->booking_source_id;	
-	$data1['source']					=	$result->source;
-	$data1['trip_model']				=	$result->trip_model_id;
-	$data1['no_of_passengers']		=	$result->no_of_passengers;
-	$data1['pickupcity']				=	$result->pick_up_city;
-	$data1['pickupcitylat']			=	$result->pick_up_lat;
-	$data1['pickupcitylng']			=	$result->pick_up_lng;
-	$data1['pickuparea']				=	$result->pick_up_area;
-	$data1['pickuplandmark']			=	$result->pick_up_landmark;
-	$data1['viacity']				=	$result->via_city;
-	$data1['viacitylat']				=	$result->via_lat;
-	$data1['viacitylng']				=	$result->via_lng;
-	$data1['viaarea']				=	$result->via_area;
-	$data1['vialandmark']			=	$result->via_landmark;
-	$data1['dropdownlocation']		=	$result->drop_city;
-	$data1['dropdownlocationlat']	=	$result->drop_lat;
-	$data1['dropdownlocationlng']	=	$result->drop_lng;
-	$data1['dropdownarea']			=	$result->drop_area;
-	$data1['dropdownlandmark']		=	$result->drop_landmark;
-	$data1['pickupdatepicker']		=	$result->pick_up_date;
-	$data1['dropdatepicker']			=	$result->drop_date;
-	$data1['pickuptimepicker']		=	$result->pick_up_time;
-	$data1['droptimepicker']			=	$result->drop_time;
-	$pickupdatetime			= $result->pick_up_date.' '.$result->pick_up_time;
-	$dropdatetime			= $result->drop_date.' '.$result->drop_time;
-	$data1['vehicle_type']			=	$result->vehicle_type_id;
-	$data1['vehicle_ac_type']		=	$result->vehicle_ac_type_id;
-	$data1['vehicle_make']			=	$result->vehicle_make_id;
-	$data1['vehicle_model']			=	$result->vehicle_model_id;
-	$data1['remarks']				=	$result->remarks;
-	$data1['recurrent_yes']			= 	'';
-	if(isset($result->vehicle_beacon_light_option_id) && $result->vehicle_beacon_light_option_id > 0){
-		$data1['beacon_light']=TRUE;
-		if($result->vehicle_beacon_light_option_id==BEACON_LIGHT_RED){
+					}
+					$data1['booking_source']		= $result->booking_source_id;	
+					$data1['source']			= $result->source;
+					$data1['trip_model']			= $result->trip_model_id;
+					$data1['no_of_passengers']		= $result->no_of_passengers;
+					$data1['pickupcity']			= $result->pick_up_city;
+					$data1['pickupcitylat']			= $result->pick_up_lat;
+					$data1['pickupcitylng']			= $result->pick_up_lng;
+					$data1['pickuparea']			= $result->pick_up_area;
+					$data1['pickuplandmark']		= $result->pick_up_landmark;
+					$data1['viacity']			= $result->via_city;
+					$data1['viacitylat']			= $result->via_lat;
+					$data1['viacitylng']			= $result->via_lng;
+					$data1['viaarea']			= $result->via_area;
+					$data1['vialandmark']			= $result->via_landmark;
+					$data1['dropdownlocation']		= $result->drop_city;
+					$data1['dropdownlocationlat']		= $result->drop_lat;
+					$data1['dropdownlocationlng']		= $result->drop_lng;
+					$data1['dropdownarea']			= $result->drop_area;
+					$data1['dropdownlandmark']		= $result->drop_landmark;
+					$data1['pickupdatepicker']		= $result->pick_up_date;
+					$data1['dropdatepicker']		= $result->drop_date;
+					$data1['pickuptimepicker']		= $result->pick_up_time;
+					$data1['droptimepicker']		= $result->drop_time;
+					$pickupdatetime		= $result->pick_up_date.' '.$result->pick_up_time;
+					$dropdatetime		= $result->drop_date.' '.$result->drop_time;
+					$data1['vehicle_type']			= $result->vehicle_type_id;
+					$data1['vehicle_ac_type']		= $result->vehicle_ac_type_id;
+					$data1['vehicle_make']			= $result->vehicle_make_id;
+					$data1['vehicle_model']			= $result->vehicle_model_id;
+					$data1['remarks']			= $result->remarks;
+					$data1['recurrent_yes']			= '';
+					if(isset($result->vehicle_beacon_light_option_id) && $result->vehicle_beacon_light_option_id > 0){
+						$data1['beacon_light']=TRUE;
+						if($result->vehicle_beacon_light_option_id==BEACON_LIGHT_RED){
+							$data1['beacon_light_radio']='red';
+						}else{
+							$data1['beacon_light_radio']='blue';
+						}
+					}else{
+						$data1['beacon_light']='';
+						$data1['beacon_light_radio']='';
+						$data1['beacon_light_id'] = '';
 
-			$data1['beacon_light_radio']='red';
-					
-		}else{
-	
-			$data1['beacon_light_radio']='blue';
+					}
+					if(isset($result->pluckcard) && $result->pluckcard==true){
+						$data1['pluck_card']=TRUE;
+					}else{
+						$data1['pluck_card']='';
+					}
+					if(isset($result->uniform) && $result->uniform==true){
+						$data1['uniform']=TRUE;
+					}else{
+						$data1['uniform']='';
+					}
+					$data1['seating_capacity']	= $result->vehicle_seating_capacity_id;
+					$data1['language']		= $result->driver_language_id;
+					$data1['tariff']		= $result->tariff_id;
+					$data1['available_vehicle']	= $result->vehicle_id;
+					$data1['available_driver']	= $result->driver_id;
+					$this->session->set_userdata('driver_id',$result->driver_id);
+					$data1['customer_type']		= $result->customer_type_id;
+				}else{
+
+					redirect(base_url().'organization/front-desk/trips');
+				}
+			}else if($this->session->userdata('customer')){
+				$customer=$this->session->userdata('customer');
+				$data1['customer']	= $this->session->userdata('customer')->name;
+				$data1['new_customer']		= 'false';
+				$data1['email']			= $this->session->userdata('customer')->email;
+				$data1['mobile']		= $this->session->userdata('customer')->mobile;
+
+				$this->session->set_userdata('customer_id',$this->session->userdata('customer')->id);
+				$this->session->set_userdata('customer_name',$this->session->userdata('customer')->name);
+				$this->session->set_userdata('customer_email',$this->session->userdata('customer')->email);
+				$this->session->set_userdata('customer_mobile',$this->session->userdata('customer')->mobile);
+			}
 			
-		}
-	}else{
 
-		$data1['beacon_light']='';
-		$data1['beacon_light_radio']='';
-		$data1['beacon_light_id'] = '';
-
-	}
-	if(isset($result->pluckcard) && $result->pluckcard==true){
-		$data1['pluck_card']=TRUE;
-	}else{
-		$data1['pluck_card']='';
-	}
-	if(isset($result->uniform) && $result->uniform==true){
-		$data1['uniform']=TRUE;
-	}else{
-		$data1['uniform']='';
-	}
-	$data1['seating_capacity']		=	$result->vehicle_seating_capacity_id;
-	$data1['language']				=	$result->driver_language_id;
-	$data1['tariff']				=	$result->tariff_id;
-	$data1['available_vehicle']		=	$result->vehicle_id;
-	$data1['available_driver']		=	$result->driver_id;
-	$this->session->set_userdata('driver_id',$result->driver_id);
-	$data1['customer_type']			=	$result->customer_type_id;
-	}else{
-
-	redirect(base_url().'organization/front-desk/trips');
-	}
-	}
-	/*if(isset($data1['vehicle_type']) && isset($data1['vehicle_ac_type']) && isset($data1['vehicle_make']) && isset($data1['vehicle_model']) && isset($pickupdatetime) && isset($dropdatetime)){
-	$available=array('vehicle_type'=>$data1['vehicle_type'],'vehicle_ac_type'=>$data1['vehicle_ac_type'],'vehicle_make'=>$data1['vehicle_make'],'vehicle_model'=>$data1['vehicle_model'],'pickupdatetime'=>$pickupdatetime,'dropdatetime'=>$dropdatetime,'organisation_id'=>$this->session->userdata('organisation_id'));
-	$res_vehicles=$this->getAvailableVehicle($available);
-	
-	$res_tariffs=$this->tariffSelecter($available);
-	$available_vehicles='';
-	$available_tarif='';
-	if(count($res_vehicles[0])>0){
-	for($index_vehicles=0;$index_vehicles<count($res_vehicles);$index_vehicles++){
-		$available_vehicles[$res_vehicles[$index_vehicles]['vehicle_id']]=$res_vehicles[$index_vehicles]['registration_number'];
-	}
-	}
-	for($index_tarif=0;$index_tarif<count($res_tariffs);$index_tarif++){
-		$available_tarif[$res_tariffs[$index_tarif]['id']]=$res_tariffs[$index_tarif]['title'];
-	}
-	$data['tariffs']=$available_tarif;
-	$data['available_vehicles']=$available_vehicles;
-	}else if(isset($data1['vehicle_type']) && isset($data1['vehicle_ac_type']) && isset($data1['vehicle_make']) && isset($data1['vehicle_model'])){
-	$available=array('vehicle_type'=>$data1['vehicle_type'],'vehicle_ac_type'=>$data1['vehicle_ac_type'],'vehicle_make'=>$data1['vehicle_make'],'vehicle_model'=>$data1['vehicle_model'],'organisation_id'=>$this->session->userdata('organisation_id'));
-	$res_tariffs=$this->tariffSelecter($available);
-	$data['available_vehicles']='';
-	}else{
-	$data['tariffs']='';
-	$data['available_vehicles']='';
-	}*/
-
-	if(isset($data1) && count($data1)>0){
-	$data['information']=$data1;
-	}else{
-	$data['information']=false;
-	}
-	/*$_REQUEST['c_group_val']='';
-	if(isset($_REQUEST['c_group_val']) || $_REQUEST['c_group_val']!='' ){
-	echo $_REQUEST['c_group_val'];
-	}*/
-	$data['title']="Trip Booking | ".PRODUCT_NAME;  
-	$page='user-pages/trip-booking';
-	$this->load_templates($page,$data);
+			if(isset($data1) && count($data1)>0){
+				$data['information']=$data1;
+			}else{
+				$data['information']=false;
+			}
+			
+			$data['title']="Trip Booking | ".PRODUCT_NAME;  
+			$page='user-pages/trip-booking';
+			$this->load_templates($page,$data);
 	
 	}
 	else{
@@ -810,7 +810,7 @@ class User extends CI_Controller {
 	}	
 
 	public function load_templates($page='',$data=''){
-	if($this->session_check()==true) {
+	if($this->session_check()==true || $this->customer_session_check()==true) {
 		$this->load->view('admin-templates/header',$data);
 		$this->load->view('admin-templates/nav');
 		$this->load->view($page,$data);

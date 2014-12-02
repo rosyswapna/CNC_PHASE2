@@ -194,6 +194,8 @@ $this->mysession->delete('post');
 if($customer_type==-1){
 $customer_type='';
 }
+
+//echo $booking_by;exit;
 ?>
 
 
@@ -236,18 +238,28 @@ $customer_type='';
 						<div class="form-group">
 						<?php $class="form-control row-source-50-percent-width-with-margin-8";
 						echo $this->form_functions->populate_dropdown('booking_source',$booking_sources,$booking_source,$class,$id='',$msg="Select Source");?><div class="row-source-50-percent-width-with-margin-8">
-										<?php echo $this->form_functions->populate_dropdown('customer_group',$customer_groups,$customer_group,$class ='groups form-control',$id='customer-group',$msg="Select Groups"); ?>
-										<?php echo $this->form_functions->form_error_session('customer_group', '<p class="text-red error-margin">', '</p>');?>
-										<?php echo $this->form_functions->populate_dropdown('customer_list',$customer_list='',$customer_list='',$class ='groups form-control',$id='customer-list',$msg=''); ?>
+						<?php echo $this->form_functions->populate_dropdown('customer_group',$customer_groups,$customer_group,$class ='groups form-control',$id='customer-group',$msg="Select Groups"); ?>
+						<?php echo $this->form_functions->form_error_session('customer_group', '<p class="text-red error-margin">', '</p>');?>
+						<?php echo $this->form_functions->populate_dropdown('customer_list',$customer_list='',$customer_list='',$class ='groups form-control',$id='customer-list',$msg=''); ?>
 								</div>
 						</div>
 						<table>
 						<tr>
 							<td>
+
+							<?php if($booking_by == 'customer'){
+								
+								echo form_hidden('mobile',$mobile);
+								echo form_hidden('email',$email);
+								echo form_hidden('customer',$customer);
+								echo form_hidden('new_customer',$new_customer);
+							
+							}else{?>
 							<div class="div-with-90-percent-width-and-marigin-5 passenger-basic-info">
 								
 								<div class="form-group margin-top-less-10">
 								<?php 
+								
 								echo form_input(array('name'=>'mobile','class'=>'form-control  col-1-textbox-with-50-percent-width-and-float-left mandatory','id'=>'mobile','placeholder'=>'Mobile','value'=>$mobile));
 								echo form_input(array('name'=>'email', 'class'=>'form-control col-2-textbox-with-50-percent-width-and-float-left ','id'=>'email','placeholder'=>'Email','value'=>$email)).br().form_label('','mobile_error').nbs(35).form_label('','email_error');
 								
@@ -260,6 +272,7 @@ $customer_type='';
 								<?php echo $this->form_functions->form_error_session('email', '<p class="text-red error-margin">', '</p>').nbs(8);?>
 								</span>
 								</div>
+
 								<div class="form-group">
 								<?php 
 								echo form_input(array('name'=>'customer','class'=>'form-control mandatory float-left margin-top-less-18', 'id'=>'customer','placeholder'=>'Customer','value'=>$customer)).form_label('','name_error').$this->form_functions->form_error_session('customer', '<p class="text-red error-margin">', '</p>');
@@ -267,6 +280,8 @@ $customer_type='';
 								<div class="hide-me"><?php echo form_input(array('name'=>'new_customer','class'=>'form-control new-customer','value'=>$new_customer)); ?></div>
 								</div>
 							</div>
+
+							<?php }?>
 							</td>
 							<td>
 								
@@ -331,17 +346,24 @@ $customer_type='';
 									<td>
 									<div class="form-group">
 										<?php $class="form-control row-source-50-percent-width-with-margin-8";
-										 echo $this->form_functions->populate_dropdown('trip_model',$trip_models,$trip_model,$class,$id='',$msg="Select Trip"); 
-										echo form_input(array('name'=>'no_of_passengers','class'=>'form-control row-source-50-percent-width-with-margin-8','id'=>'no_of_passengers','placeholder'=>'No of passengers','value'=>$no_of_passengers)).br(2);?>
-									<?php echo $this->form_functions->form_error_session('trip_models', '<p class="text-red error-margin">', '</p>').$this->form_functions->form_error_session('no_of_passengers', '<p class="text-red error-margin">', '</p>');?>
-									</div>
-									<div class="form-group">
+
+
+					if($booking_by == 'customer') 
+						form_hidden('trip_model',$trip_model);
+					else	
+						echo $this->form_functions->populate_dropdown('trip_model',$trip_models,$trip_model,$class,$id='',$msg="Select Trip"); 
+
+					echo form_input(array('name'=>'no_of_passengers','class'=>'form-control row-source-50-percent-width-with-margin-8','id'=>'no_of_passengers','placeholder'=>'No of passengers','value'=>$no_of_passengers)).br(2);?>
+					<?php echo $this->form_functions->form_error_session('trip_models', '<p class="text-red error-margin">', '</p>').$this->form_functions->form_error_session('no_of_passengers', '<p class="text-red error-margin">', '</p>');?>
+					</div>
+
+					<div class="form-group">
 								
                                         <div class="input-group-btn ">
                                             <?php 
-									echo form_input(array('name'=>'pickupcity','class'=>'bold form-control width-96-percent-and-margin-8 dropdown-toggle mandatory margin-top-less-6','id'=>'pickupcity','placeholder'=>'Pick up','value'=>$pickupcity));?><div class="hide-me"><?php echo form_input(array('name'=>'pickupcitylat','id'=>'pickupcitylat','value'=>$pickupcitylat)).form_input(array('name'=>'pickupcitylng','id'=>'pickupcitylng','value'=>$pickupcitylng));?></div><?php
-									echo $this->form_functions->form_error_session('pickupcity', '<p class="text-red error-margin">', '</p>');
-									 ?>
+						echo form_input(array('name'=>'pickupcity','class'=>'bold form-control width-96-percent-and-margin-8 dropdown-toggle mandatory margin-top-less-6','id'=>'pickupcity','placeholder'=>'Pick up','value'=>$pickupcity));?><div class="hide-me"><?php echo form_input(array('name'=>'pickupcitylat','id'=>'pickupcitylat','value'=>$pickupcitylat)).form_input(array('name'=>'pickupcitylng','id'=>'pickupcitylng','value'=>$pickupcitylng));?></div><?php
+						echo $this->form_functions->form_error_session('pickupcity', '<p class="text-red error-margin">', '</p>');
+					    ?>
                                             <ul class="dropdown-menu dropdown-menu-on-key-press autofill-pickupcity">
                                                 
                                             </ul>
@@ -461,8 +483,10 @@ $customer_type='';
 						echo br(2);
 						 ?>
 						</div>
+
 						
-						<div class="form-group hide-me">
+
+						<div class="form-group <?php echo ($booking_by == 'customer')?'':'hide-me';?>">
 						<?php $class="form-control row-source-50-percent-width-with-margin-8";
 						echo $this->form_functions->populate_dropdown('seating_capacity',$vehicle_seating_capacity,$seating_capacity,$class,$id='',$msg="Seats");
 						echo $this->form_functions->populate_dropdown('language',$languages,$language,$class,$id='',$msg="Languages");
@@ -470,7 +494,7 @@ $customer_type='';
 						echo br(2);
 						 ?>
 						</div>
-						<div class="form-group">
+						<div class="form-group <?php echo ($booking_by == 'customer')?'hide-me':'';?>">
 						<?php $class="form-control row-source-50-percent-width-with-margin-8";
 						$id="tarrif";
 						echo $this->form_functions->populate_dropdown('tariff',$tariffs,$tariff,$class,$id,$msg="Tariffs");
@@ -481,7 +505,7 @@ $customer_type='';
 						 ?>
 						<div class="hide-me vehicle-tarif-checker" tariff_id="<?php echo $tariff;?>" available_vehicle_id="<?php echo $available_vehicle;?>"></div>
 						</div>
-						<div class="form-group">
+						<div class="form-group <?php echo ($booking_by == 'customer')?'hide-me':'';?>">
 						<?php $class="form-control row-source-100-percent-width-with-margin-8 mandatory";
 						$id="available_driver";
 						echo $this->form_functions->populate_dropdown('available_driver',$available_drivers,$available_driver,$class,$id,$msg="Driver");
