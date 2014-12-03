@@ -53,7 +53,7 @@ class Customer extends CI_Controller {
 			$customer = $this->session->userdata('customer');
 
 			$data['mode']=$customer->id;
-
+			$data['action'] = 'view';
 			
 			$pagedata['id']=$customer->id;
 			$pagedata['name']=$customer->name;

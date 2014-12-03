@@ -44,83 +44,110 @@
 		<legend class="body-head">Customers</legend>
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
-			<?php 
-	if(isset($insurance_tab)){
-	$ins_class=$insurance_tab;
-	$i_tab="tab-pane active";
-	}
-	else{
-	$ins_class='';
-	$i_tab="tab-pane ";
-	}
-	if(isset($trip_tab)){
-	$trip_class=$trip_tab;
-	$t_tab="tab-pane active";
-	}
-	else{
-	$trip_class='';
-	$t_tab="tab-pane ";
-	}
-	if(isset($cust_tab)){ 
-	$cust_class=$cust_tab;
-	$c_tab="tab-pane active";
-	}
-	else{
-	$cust_class='';
-	$c_tab="tab-pane";
-	}
-	if(isset($loan_tab)){
-	$loan_class=$loan_tab;
-	$l_tab="tab-pane active";
-	}
-	else{
-	$loan_class='';
-	$l_tab="tab-pane ";
-	}
-	if(isset($owner_tab)){
-	$owner_class=$owner_tab;
-	$o_tab="tab-pane active";
-	}
-	else{
-	$owner_class='';
-	$o_tab="tab-pane ";
-	}
-	if(isset($trip_tab)){
-	$trip_class=$trip_tab;
-	$t_tab="tab-pane active";
-	$c_tab="tab-pane";
-	$cust_class='';
-	}
-	else{
-	$trip_class='';
-	$t_tab="tab-pane ";
-	}
-	if(isset($pay_tab)){
-	$pay_class=$pay_tab;
-	$p_tab="tab-pane active";
-	}
-	else{
-	$pay_class='';
-	$p_tab="tab-pane ";
-	}
-	if(isset($acc_tab)){
-	$acc_class=$acc_tab;
-	$a_tab="tab-pane active";
-	}
-	else{
-	$acc_class='';
-	$a_tab="tab-pane ";
-	}
+	<?php 
+
+/*
+		if(isset($insurance_tab)){
+			$ins_class=$insurance_tab;
+			$i_tab="tab-pane active";
+		}
+		else{
+			$ins_class='';
+			$i_tab="tab-pane ";
+		}
+
+		if(isset($trip_tab)){
+			$trip_class=$trip_tab;
+			$t_tab="tab-pane active";
+		}
+		else{
+			$trip_class='';
+			$t_tab="tab-pane ";
+		}
+
+		if(isset($cust_tab)){ 
+			$cust_class=$cust_tab;
+			$c_tab="tab-pane active";
+		}
+		else{
+			$cust_class='';
+			$c_tab="tab-pane";
+		}
+
+		if(isset($loan_tab)){
+			$loan_class=$loan_tab;
+			$l_tab="tab-pane active";
+		}
+		else{
+			$loan_class='';
+			$l_tab="tab-pane ";
+		}
+
+		if(isset($owner_tab)){
+			$owner_class=$owner_tab;
+			$o_tab="tab-pane active";
+		}
+		else{
+			$owner_class='';
+			$o_tab="tab-pane ";
+		}
+		if(isset($trip_tab)){
+			$trip_class=$trip_tab;
+			$t_tab="tab-pane active";
+			$c_tab="tab-pane";
+			$cust_class='';
+		}
+		else{
+			$trip_class='';
+			$t_tab="tab-pane ";
+		}
+
+		if(isset($pay_tab)){
+			$pay_class=$pay_tab;
+			$p_tab="tab-pane active";
+		}
+		else{
+			$pay_class='';
+			$p_tab="tab-pane";
+		}
+
+		if(isset($acc_tab)){
+			$acc_class=$acc_tab;
+			$a_tab="tab-pane active";
+		}
+		else{
+			$acc_class='';
+			$a_tab="tab-pane ";
+		}
+	*/
+
+		//array of tabs for this page
+		//echo "<pre>";
+		//print_r($tabs);
+		//echo "</pre>";
+		//exit;
+
+		foreach($tabs as $tab=>$attr){
+			echo '<li class="'.$attr['class'].'">
+				<a href="#'.$attr['tab_id'].'" data-toggle="tab">'.$attr['text'].'</a>
+			      </li>';
+		}
+ 
+
 	?>
+<!--
         <li class="<?php echo $cust_class;?>"><a href="#tab_1" data-toggle="tab">Profile</a></li>
-		<?php if(isset($mode)&& $mode!='' ){?>
-		<li class="<?php echo $trip_class;?>"><a href="#tab_2" data-toggle="tab">Trip</a></li>
+	<?php if(isset($mode)&& $mode!='' ){?>
+	<li class="<?php echo $trip_class;?>"><a href="#tab_2" data-toggle="tab">Trip</a></li>
         <li class="<?php echo $pay_class;?>"><a href="#tab_3" data-toggle="tab">Payments</a></li>
-         <li class="<?php echo $acc_class;?>"><a href="#tab_4" data-toggle="tab">Accounts</a></li>
+        <li class="<?php echo $acc_class;?>"><a href="#tab_4" data-toggle="tab">Accounts</a></li>
        <?php } ?>
+-->
     </ul>
     <div class="tab-content">
-        <div class="<?php echo $c_tab;?>" id="tab_1">
+
+	<?php if (array_key_exists('c_tab', $tabs)) {?>
+	<div class="<?php echo $tabs['c_tab']['content_class'];?>" id="<?php echo $tabs['c_tab']['tab_id'];?>">
             		 <div class="profile-body width-80-percent-and-margin-auto">
 			<fieldset class="body-border">
    			 <legend class="body-head">Personal Details</legend>
@@ -218,27 +245,31 @@
 		 
 			</fieldset>
 		</div>
-        </div>
-		 <div class="<?php echo $t_tab;?>" id="tab_2">
-            <div class="page-outer">
-	   <fieldset class="body-border">
-		<legend class="body-head">Trip</legend><div class="form-group">
-	<div class="box-body table-responsive no-padding">
-	
-	<?php //for search ?>
-	<?php  echo form_open(base_url()."organization/front-desk/customer/".$c_id); ?>
-	<table>
-	<td><?php echo form_input(array('name'=>'from_pick_date','class'=>'pickupdatepicker initialize-date-picker form-control' ,'placeholder'=>'From Date','value'=>'')); ?></td>
-	<td><?php echo form_input(array('name'=>'to_pick_date','class'=>'pickupdatepicker initialize-date-picker form-control' ,'placeholder'=>'To Date','value'=>'')); ?></td>
-	<td><?php echo form_submit("cdate_search","Search","class='btn btn-primary'");
-				echo form_close();?></td>
-	</table>
-			<table class="table table-hover table-bordered">
-				<tbody>
+	</div>
+	<?php }?>
+
+	<?php if (array_key_exists('t_tab', $tabs)) {?>
+	<div class="<?php echo $tabs['t_tab']['content_class'];?>" id="<?php echo $tabs['t_tab']['tab_id'];?>">
+		<div class="page-outer">
+		<fieldset class="body-border">
+			<legend class="body-head">Trip</legend>
+			<div class="form-group">
+				<div class="box-body table-responsive no-padding">
+				<?php  echo form_open(base_url()."organization/front-desk/customer/".$c_id); ?>
+
+				<table>
+					<td><?php echo form_input(array('name'=>'from_pick_date','class'=>'pickupdatepicker initialize-date-picker form-control' ,'placeholder'=>'From Date','value'=>'')); ?></td>
+					<td><?php echo form_input(array('name'=>'to_pick_date','class'=>'pickupdatepicker initialize-date-picker form-control' ,'placeholder'=>'To Date','value'=>'')); ?></td>
+					<td><?php echo form_submit("cdate_search","Search","class='btn btn-primary'");
+								echo form_close();?></td>
+				</table>
+
+				<table class="table table-hover table-bordered">
+					<tbody>
 					<tr>
 						<th>SlNo</th>
-					    <th>Date</th>
-					    <th>Route</th>
+						<th>Date</th>
+						<th>Route</th>
 						<th>Kilometers</th>
 						<th>No Of Days</th>
 						<!--<th>Releasing Place</th>-->
@@ -246,69 +277,75 @@
 					    
 					</tr>
 					<?php	
-						$full_tot_km=$total_trip_amount=0;
+					$full_tot_km=$total_trip_amount=0;
 					if(isset($trips) && $trips!=false){
 						for($trip_index=0;$trip_index<count($trips);$trip_index++){
-						$tot_km=$trips[$trip_index]['end_km_reading']-$trips[$trip_index]['start_km_reading'];
-						$full_tot_km=$full_tot_km+$tot_km;
-						$total_trip_amount=$total_trip_amount+$trips[$trip_index]['total_trip_amount'];
+							$tot_km=$trips[$trip_index]['end_km_reading']-$trips[$trip_index]['start_km_reading'];
+							$full_tot_km=$full_tot_km+$tot_km;
+							$total_trip_amount=$total_trip_amount+$trips[$trip_index]['total_trip_amount'];						
+							$date1 = date_create($trips[$trip_index]['pick_up_date'].' '.$trips[$trip_index]['pick_up_time']);
+							$date2 = date_create($trips[$trip_index]['drop_date'].' '.$trips[$trip_index]['drop_time']);
 						
-						
-						$date1 = date_create($trips[$trip_index]['pick_up_date'].' '.$trips[$trip_index]['pick_up_time']);
-						$date2 = date_create($trips[$trip_index]['drop_date'].' '.$trips[$trip_index]['drop_time']);
-						
-						$diff= date_diff($date1, $date2);
-						$no_of_days=$diff->d;
-						if($no_of_days==0){
-							$no_of_days='1 Day';
+							$diff= date_diff($date1, $date2);
+							$no_of_days=$diff->d;
+							if($no_of_days==0){
+								$no_of_days='1 Day';
 							
-						}else{
-							$no_of_days.=' Days';
+							}else{
+								$no_of_days.=' Days';
 							
-						}
+							}
 
-						?>
-						<tr>
-							<td><?php echo $trip_index+1; ?></td>
-							<td><?php echo $trips[$trip_index]['pick_up_date']; ?></td>
-							<td><?php echo $trips[$trip_index]['pick_up_city'].' to '.$trips[$trip_index]['drop_city']; ?></td>
-							<td><?php echo number_format($tot_km,2); ?></td>
-							<td><?php echo $no_of_days; ?></td>
-							<!--<td><?php //echo $trips[$trip_index]['releasing_place'];?></td>-->
-							<td><?php echo $trips[$trip_index]['total_trip_amount']; ?></td>
-						
-						</tr>
-						<?php } 
-						}					
 					?>
 					<tr>
-					<td>Total</td>
-					<td></td>
-					<td></td>
-					<td><?php echo $full_tot_km; ?></td>
-					<td></td>
-					<td><?php echo number_format($total_trip_amount,2); ?></td>
+						<td><?php echo $trip_index+1; ?></td>
+						<td><?php echo $trips[$trip_index]['pick_up_date']; ?></td>
+						<td><?php echo $trips[$trip_index]['pick_up_city'].' to '.$trips[$trip_index]['drop_city']; ?></td>
+						<td><?php echo number_format($tot_km,2); ?></td>
+						<td><?php echo $no_of_days; ?></td>
+						<!--<td><?php //echo $trips[$trip_index]['releasing_place'];?></td>-->
+						<td><?php echo $trips[$trip_index]['total_trip_amount']; ?></td>
+				
 					</tr>
-					<?php //endforeach;
-					//}
+					<?php 	} 
+					}					
 					?>
-				</tbody>
-			</table><?php //echo $page_links;?>
+					<tr>
+						<td>Total</td>
+						<td></td>
+						<td></td>
+						<td><?php echo $full_tot_km; ?></td>
+						<td></td>
+						<td><?php echo number_format($total_trip_amount,2); ?></td>
+					</tr>
+						
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</fieldset>
 		</div>
-</div>
-</fieldset>
-</div>
-        </div>
-        <div class="<?php echo $p_tab;?>" id="tab_3">
+	</div>
+	<?php }?>
+	
+	<?php if (array_key_exists('p_tab', $tabs)) {?>
+        <div class="<?php echo $tabs['p_tab']['content_class'];?>" id="<?php echo $tabs['p_tab']['tab_id'];?>">
             <iframe src="<?php echo base_url().'account/front_desk/CustomerPayment/C'.$customer_id.'/true';?>" height="600px" width="100%">
 		<p>Browser not Support</p>
 		</iframe>
         </div>
-        <div class="<?php echo $a_tab;?>" id="tab_4">
+	<?php }?>
+
+	
+	<?php if (array_key_exists('a_tab', $tabs)) {?>		
+        <div class="<?php echo $tabs['a_tab']['content_class'];?>" id="<?php echo $tabs['a_tab']['tab_id'];?>">
           <iframe src="<?php echo base_url().'account/front_desk/CustomerPaymentInquiry/C'.$customer_id.'/true';?>" height="600px" width="100%">
 		<p>Browser not Support</p>
 		</iframe>
         </div>
+	<?php }?>
+	
+	
     </div>
 </div>
 	

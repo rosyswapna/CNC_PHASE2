@@ -229,7 +229,7 @@
                         </li>
 
 			<li>
-			    <a href="<?php echo base_url().'customer/profile';?>">
+			    <a href="<?php echo base_url().'organization/front-desk/customer/'.$this->session->userdata('customer')->id;?>">
 				<i class="fa fa-angle-double-right"></i>Manage Profile
 			    </a>
 			</li>

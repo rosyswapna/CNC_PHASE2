@@ -104,6 +104,8 @@ class User extends CI_Controller {
 			
 			$this->ShowBookTrip($param2);
 			
+		}elseif($this->customer_session_check()==true && $param1=='customer') {
+			$this->Customer($param2);
 		}
 		else{
 			$this->notAuthorized();
@@ -749,9 +751,8 @@ class User extends CI_Controller {
 	}	
 	
 	public function Customer($param2=''){
-		if($this->session_check()==true) {
-		$data['mode']=$param2;
-		
+		if($this->session_check()==true || $this->customer_session_check()==true) {
+			$data['mode']=$param2;
 		
 			if($param2!=''){
 				//$condition=array('id'=>$param2);
@@ -771,13 +772,13 @@ class User extends CI_Controller {
 			$tbl_arry=array('customer_types','customer_groups');
 			
 			for ($i=0;$i<count($tbl_arry);$i++){
-			$result=$this->user_model->getArray($tbl_arry[$i]);
-			if($result!=false){
-			$data[$tbl_arry[$i]]=$result;
-			}
-			else{
-			$data[$tbl_arry[$i]]='';
-			}
+				$result=$this->user_model->getArray($tbl_arry[$i]);
+				if($result!=false){
+					$data[$tbl_arry[$i]]=$result;
+				}
+				else{
+					$data[$tbl_arry[$i]]='';
+				}
 			} 
 			$data['title']="Customer | ".PRODUCT_NAME;
 			if(isset($pagedata)){ 
@@ -785,32 +786,74 @@ class User extends CI_Controller {
 			}else{
 				$data['values']=false;
 			}
-			if($param2!=''){
-			$tdate=date('Y-m-d');
-			$date=explode("-",$tdate);
-			$fdate='2014-'.$date[1].'-01';
-			$todate='2014-'.$date[1].'-31';
-			if((isset($_REQUEST['from_pick_date'])|| isset($_REQUEST['to_pick_date']))&& isset($_REQUEST['cdate_search'])){ 
-			if($_REQUEST['from_pick_date']==null && $_REQUEST['to_pick_date']==null){
-			$fdate='2014-'.$date[1].'-01';
-			$todate='2014-'.$date[1].'-31';
-			} else{
-			$fdate=$_REQUEST['from_pick_date'];
-			$todate=$_REQUEST['to_pick_date']; }
-			$data['trip_tab']='active';
 			
+			$active_tab = 'c_tab';//default profile tab
+			
+			if($param2!=''){
+				$tdate=date('Y-m-d');
+				$date=explode("-",$tdate);
+				$fdate='2014-'.$date[1].'-01';
+				$todate='2014-'.$date[1].'-31';
+				if((isset($_REQUEST['from_pick_date'])|| isset($_REQUEST['to_pick_date']))&& isset($_REQUEST['cdate_search'])){ 
+					if($_REQUEST['from_pick_date']==null && $_REQUEST['to_pick_date']==null){
+					$fdate='2014-'.$date[1].'-01';
+					$todate='2014-'.$date[1].'-31';
+					} else{
+					$fdate=$_REQUEST['from_pick_date'];
+					$todate=$_REQUEST['to_pick_date']; }
+					//$data['trip_tab']='active';
+					$active_tab = 't_tab';//trip tab
+				}
+				$data['trips']=$this->trip_booking_model->getCustomerVouchers($param2,$fdate,$todate);
 			}
-			$data['trips']=$this->trip_booking_model->getCustomerVouchers($param2,$fdate,$todate);
-			}
-			$data['cust_tab']='active';
+			//$data['cust_tab']='active';
+
+			$data['tabs'] = $this->set_up_customer_tabs($active_tab,$param2);
+
 			$data['c_id']=$param2;
 			$page='user-pages/customer';
-		    $this->load_templates($page,$data);
+
+		   	$this->load_templates($page,$data);
 		}else{
 			$this->notAuthorized();
 		}
 
 	}	
+
+
+	/*customer page tab setting ,
+	1.first parameter is tab identifier you want set active tab, default profile
+		tabs are c_tab=>profile,t_tab=>trip , p_tab=>payments and a_tab=>accounts 
+	2.second parameter is the customer id */
+	function set_up_customer_tabs($tab_active='c_tab',$customer_id=''){
+			
+		$tabs['c_tab'] = array('class'=>'','tab_id'=>'tab_1','text'=>'Profile',
+						'content_class'=>'tab-pane');
+
+		if($customer_id!='' && $customer_id > 0){
+
+			$tabs['t_tab'] = array('class'=>'','tab_id'=>'tab_2','text'=>'Trip',
+						'content_class'=>'tab-pane');
+			if(!$this->session->userdata('customer')){
+				$tabs['p_tab'] = array('class'=>'','tab_id'=>'tab_3','text'=>'Payments',
+						'content_class'=>'tab-pane');
+					
+			}
+			$tabs['a_tab'] = array('class'=>'','tab_id'=>'tab_4','text'=>'Accounts',
+						'content_class'=>'tab-pane');
+		}
+
+		if (array_key_exists($tab_active, $tabs)) {
+			$tabs[$tab_active]['class'] = 'active';
+			$tabs[$tab_active]['content_class'] = 'tab-pane active';
+		}else{
+			$tabs['c_tab']['class'] = 'active';
+			$tabs['c_tab']['content_class'] = 'tab-pane active';
+		}
+
+
+		return $tabs;
+	}
 
 	public function load_templates($page='',$data=''){
 	if($this->session_check()==true || $this->customer_session_check()==true) {
