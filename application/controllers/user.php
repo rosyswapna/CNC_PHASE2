@@ -389,16 +389,20 @@ class User extends CI_Controller {
 	public function ShowBookTrip($trip_id =''){
 
 		if($this->session_check() == true || $this->customer_session_check()==true) {
-
+			
+			//set flag for new trip by 'customer' or 'organization'
 			if($this->customer_session_check() == true){
 				$data['booking_by'] = 'customer';
 			}else{
 				$data['booking_by'] = 'organization ';
 			}
-	
-			//echo $this->session->userdata('organisation_id');
-			$tbl_arry=array('booking_sources','available_drivers','available_vehicles','trip_models','vehicle_types','vehicle_models','vehicle_makes','vehicle_ac_types','vehicle_fuel_types','vehicle_seating_capacity','vehicle_beacon_light_options','languages','payment_type','customer_types','customer_groups');
-	
+			
+			//set form arrays
+			$tbl_arry=array	('booking_sources','available_drivers','available_vehicles',
+					'trip_models','vehicle_types','vehicle_models',	'vehicle_makes',
+					'vehicle_ac_types','vehicle_fuel_types','vehicle_seating_capacity',
+					'vehicle_beacon_light_options','languages','payment_type',
+					'customer_types','customer_groups');
 			for ($i=0;$i<count($tbl_arry);$i++){
 				$result=$this->user_model->getArray($tbl_arry[$i]);
 				if($result!=false){
@@ -407,15 +411,14 @@ class User extends CI_Controller {
 				else{
 					$data[$tbl_arry[$i]]='';
 				}
-			}//echo date('Y-m-d H:i');
+			}
+			
+			//get notification and customer array
+			list($data['notification'],$data['customers_array']) = $this->getNotifications();
 
-			$conditon =array('trip_status_id'=>TRIP_STATUS_PENDING,'CONCAT(pick_up_date," ",pick_up_time) >='=>date('Y-m-d H:i'),'organisation_id'=>$this->session->userdata('organisation_id'));
-			$orderby = ' CONCAT(pick_up_date,pick_up_time) ASC';
-			$data['notification']=$this->trip_booking_model->getDetails($conditon,$orderby);
-			$data['customers_array']=$this->customers_model->getArray();
 			$data['tariffs']='';
 
-			if($trip_id!='' && $trip_id > 0) {
+			if($trip_id!='' && $trip_id > 0) { //edit trip
 				$conditon = array('id'=>$trip_id,'organisation_id'=>$this->session->userdata('organisation_id'));
 				$result=$this->trip_booking_model->getDetails($conditon);
 				$result=$result[0];
@@ -1730,20 +1733,31 @@ FROM vehicles V where V.organisation_id = '.$this->session->userdata('organisati
 	}
 	}
 
+	//get notification with organisaion id and customer if exists in session
 	public function getNotifications(){
-	if(isset($_REQUEST['notify']) ){
-	$conditon =array('trip_status_id'=>TRIP_STATUS_PENDING,'CONCAT(pick_up_date," ",pick_up_time) >='=>date('Y-m-d H:i'),'organisation_id'=>$this->session->userdata('organisation_id'));
-	//$where_or=array('trip_status_id'=>TRIP_STATUS_CONFIRMED,'trip_status_id'=>TRIP_STATUS_ONTRIP);
-	$orderby = ' CONCAT(pick_up_date," ",pick_up_time) ASC';
-	$notification=$this->trip_booking_model->getDetails($conditon,$orderby);
-	$customers_array=$this->customers_model->getArray();
-	$json_data=array('notifications'=>$notification,'customers'=>$customers_array);
-	if(count($notification)>0 && count($customers_array) >0 ){
-		echo json_encode($json_data);
-	}else{
-		echo 'false';
-	}
-	}
+
+		$conditon =array('trip_status_id'=>TRIP_STATUS_PENDING,'CONCAT(pick_up_date," ",pick_up_time) >='=>date('Y-m-d H:i'),'organisation_id'=>$this->session->userdata('organisation_id'));
+
+		//check customer session if yes show only logged in customer notification
+		if($this->session->userdata('customer'))
+		{
+			$conditon['customer_id']= $this->session->userdata('customer')->id;
+		}
+	
+		$orderby = ' CONCAT(pick_up_date," ",pick_up_time) ASC';
+		$notification=$this->trip_booking_model->getDetails($conditon,$orderby);
+		$customers_array=$this->customers_model->getArray();
+		
+		if(isset($_REQUEST['notify']) ){			
+			$json_data=array('notifications'=>$notification,'customers'=>$customers_array);
+			if(count($notification)>0 && count($customers_array) >0 ){
+				echo json_encode($json_data);
+			}else{
+				echo 'false';
+			}
+		}else{
+			return array($notification,$customers_array);
+		}
 
 	}
 	 

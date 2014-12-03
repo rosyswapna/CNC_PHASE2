@@ -300,7 +300,17 @@ class Customer extends CI_Controller {
 		} else {
 			return false;
 		}
-	}   
+	}  
+	
+	public function notAuthorized(){
+		$data['title']='Not Authorized | '.PRODUCT_NAME;
+		$page='not_authorized';
+		$this->load->view('admin-templates/header',$data);
+		$this->load->view('admin-templates/nav');
+		$this->load->view($page,$data);
+		$this->load->view('admin-templates/footer');
+	
+	} 
 
 
 }

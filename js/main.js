@@ -460,7 +460,7 @@ if($('.beacon-light-chek-box').attr('checked')=='checked'){
 //date picker removed for pickupdat n time drop date n time
 
 $('#pickupdatepicker').datetimepicker({timepicker:false,format:'Y-m-d',formatDate:'Y-m-d'});
-//$('#dropdatepicker').datetimepicker({timepicker:false,format:'Y-m-d',formatDate:'Y-m-d'});
+$('#dropdatepicker').datetimepicker({timepicker:false,format:'Y-m-d',formatDate:'Y-m-d'});
 /*$('#pickuptimepicker').datetimepicker({datepicker:false,
 	format:'H:i',
 	step:30
@@ -1420,19 +1420,19 @@ var h = Math.floor(total_min/60); //Get whole hours
 
 
 window.setInterval(function(){
-var current_loc=window.location.href;
-current_loc=current_loc.split('/');
-current_loc.length;
-if(current_loc[current_loc.length-1]=='trip-booking' || current_loc[current_loc.length-2]=='trip-booking'){
-notify();
-}
+	var current_loc=window.location.href;
+	current_loc=current_loc.split('/');
+	current_loc.length;
+	if(current_loc[current_loc.length-1]=='trip-booking' || current_loc[current_loc.length-2]=='trip-booking'){
+		notify();
+	}
 
 }, 60000);
 
 
 function notify(){
-var notify='notify';
-$.post(base_url+"/user/getNotifications",
+	var notify='notify';
+	$.post(base_url+"/user/getNotifications",
 		  {
 			notify:notify
 		  },function(data){//alert(data);

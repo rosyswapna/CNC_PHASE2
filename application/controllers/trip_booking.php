@@ -13,56 +13,60 @@ class Trip_booking extends CI_Controller {
 
 		}
 	public function index($param1 ='',$param2='',$param3=''){
-	if($this->session_check()==true) {
-		if($param1=='trip-booking') {
+		if($this->session_check()==true) {
+			if($param1=='trip-booking') {
 		
-		if($param2=='book-trip') {
+			if($param2=='book-trip') {
 		
+				$this->bookTrip();
+			
+			}else if($param2=='getAvailableVehicles') {
+		
+				$this->getAvailableVehicles();
+			
+			}else if($param2=='getVehicle') {
+		
+				$this->getVehicle();
+			
+			}else if($param2=='tripVoucher') {
+		
+				$this->tripVoucher();
+			
+			}else if($param2=='getTarrif') {
+		
+				$this->getTarrif();
+			
+			}else if($param2=='getVouchers') {
+		
+				$this->getVouchers();
+			}else{
+				$this->notFound();
+			}	
+			}else{
+				$this->notFound();
+			}
+		}elseif($this->customer_session_check()==true && $param2=='book-trip') {
 			$this->bookTrip();
-			
-		}else if($param2=='getAvailableVehicles') {
-		
-			$this->getAvailableVehicles();
-			
-		}else if($param2=='getVehicle') {
-		
-			$this->getVehicle();
-			
-		}else if($param2=='tripVoucher') {
-		
-			$this->tripVoucher();
-			
-		}else if($param2=='getTarrif') {
-		
-			$this->getTarrif();
-			
-		}else if($param2=='getVouchers') {
-		
-			$this->getVouchers();
 		}else{
-			$this->notFound();
-		}	
-		}else{
-			$this->notFound();
+				$this->notAuthorized();
 		}
-	}else{
-			$this->notAuthorized();
 	}
-	}
+
 	public function notFound(){
 		if($this->session_check()==true) {
-		 $this->output->set_status_header('404'); 
-		 $data['title']="Not Found";
-      	 $page='not_found';
-         $this->load_templates($page,$data);
+			 $this->output->set_status_header('404'); 
+			 $data['title']="Not Found";
+		      	 $page='not_found';
+			 $this->load_templates($page,$data);
 		}else{
 			$this->notAuthorized();
+		}
 	}
-	}	
+	
 	public function bookTrip() {
 			
 			if(isset($_REQUEST['book_trip'])){
-
+			
 				$my_customer = $this->session->userdata('customer_id');
 				if(empty($my_customer) && $_REQUEST['customer_group']==gINVALID){
 					$trip_whom = false;
@@ -77,6 +81,8 @@ class Trip_booking extends CI_Controller {
 				}else{
 					$data['trip_id']='';
 				}
+
+	
 				if(isset($_REQUEST['customer_group']) && $_REQUEST['customer_group']!=gINVALID){
 					$this->form_validation->set_rules('customer_group','Customer groups','trim|xss_clean');
 					$data['advanced']=TRUE;
@@ -109,7 +115,11 @@ class Trip_booking extends CI_Controller {
 				$this->form_validation->set_rules('mobile','Mobile','trim|regex_match[/^[0-9]{10}$/]|numeric|xss_clean');
 				$this->form_validation->set_rules('booking_source','Booking source','trim|xss_clean');
 				$this->form_validation->set_rules('source','Source','trim|min_length[2]|xss_clean');
-				$this->form_validation->set_rules('trip_model','Trip models','trim|required|xss_clean');
+
+				if(!$this->session->userdata('customer')){
+					$this->form_validation->set_rules('trip_model','Trip models','trim|required|xss_clean');
+				}
+				
 				$this->form_validation->set_rules('no_of_passengers','No of passengers','trim|xss_clean');
 				$this->form_validation->set_rules('pickupcity','Pickup city','trim|required|xss_clean');
 				$this->form_validation->set_rules('pickuparea','Pickup area','trim|xss_clean');
@@ -536,25 +546,25 @@ class Trip_booking extends CI_Controller {
 	}	
 
 	public function getVouchers($trip_id='',$ajax='NO'){
-	if(isset($_REQUEST['trip_id']) && isset($_REQUEST['ajax'])){
-	$trip_id=$_REQUEST['trip_id'];
-	$ajax=$_REQUEST['ajax'];
-	}
-	$voucher=$this->trip_booking_model->checkTripVoucherEntry($trip_id);
-	if($voucher==gINVALID){
-		if($ajax=='NO'){
-		return false;
-		}else{
-		echo 'false';
+		if(isset($_REQUEST['trip_id']) && isset($_REQUEST['ajax'])){
+		$trip_id=$_REQUEST['trip_id'];
+		$ajax=$_REQUEST['ajax'];
 		}
-	}else{
-		if($ajax=='NO'){
-		return $voucher;
+		$voucher=$this->trip_booking_model->checkTripVoucherEntry($trip_id);
+		if($voucher==gINVALID){
+			if($ajax=='NO'){
+			return false;
+			}else{
+			echo 'false';
+			}
 		}else{
-		header('Content-Type: application/json');
-		echo json_encode($voucher);
+			if($ajax=='NO'){
+			return $voucher;
+			}else{
+			header('Content-Type: application/json');
+			echo json_encode($voucher);
+			}
 		}
-	}
 	}
 	public function getTarrif(){
 		if($_REQUEST['tarrif_id'] && $_REQUEST['ajax']){
@@ -599,12 +609,21 @@ class Trip_booking extends CI_Controller {
 	}
 
 	public function session_check() {
-	if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==FRONT_DESK)) {
-		return true;
+		if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==FRONT_DESK)) 			{
+			return true;
 		} else {
-		return false;
+			return false;
 		}
 	} 
+
+	public function customer_session_check() {
+		if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==CUSTOMER)) {
+			return true;
+		} else {
+			return false;
+		}
+	}  
+
 	public function SendTripConfirmation($data,$id,$customer){ 
 	
 		//$message='Hi Customer, Your Trip Id: '.$id.'has been confirmed on '.$data['pick_up_date'].' '.$data['pick_up_time'].' Location :'.$data['pick_up_city'].'-'.$data['drop_city'].' Enjoy your trip.';

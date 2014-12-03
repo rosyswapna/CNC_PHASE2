@@ -37,7 +37,7 @@ class Login extends CI_Controller {
 	{
 		if($this->customer_session_check()==true){
 
-			redirect(base_url().'customer/dashboard');
+			redirect(base_url().'customer/home');
 
 		}elseif(isset($_REQUEST['username']) && isset($_REQUEST['password']))
 		{
@@ -87,8 +87,15 @@ class Login extends CI_Controller {
 
 	function goHome(){
 	
-		if($this->session->userdata('type')==CUSTOMER){
-			redirect(base_url().'customer/dashboard');
+
+		if($this->session->userdata('type')==ORGANISATION_ADMINISTRATOR){
+			redirect(base_url().'organization/admin');
+		}
+		elseif($this->session->userdata('type')==FRONT_DESK){
+			redirect(base_url().'organization/front-desk');
+		}
+		elseif($this->session->userdata('type')==CUSTOMER){
+			redirect(base_url().'customer/home');
 		}else{
 			$this->notFound();
 		}
