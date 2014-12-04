@@ -782,8 +782,7 @@ class User extends CI_Controller {
 	
 	public function Customer($param2=''){
 		if($this->session_check()==true || $this->customer_session_check()==true) {
-			$data['mode']=$param2;
-		
+					
 			if($param2!=''){
 				//$condition=array('id'=>$param2);
 				//$result=$this->customers_model->getCustomerDetails($condition);
@@ -837,6 +836,12 @@ class User extends CI_Controller {
 			}
 
 			$data['tabs'] = $this->set_up_customer_tabs($active_tab,$param2);
+
+			if($this->session->userdata('type') == CUSTOMER){
+				$data['edit_profile'] = false;
+			}else{
+				$data['edit_profile'] = true;
+			}
 
 			$data['c_id']=$param2;
 			$page='user-pages/customer';

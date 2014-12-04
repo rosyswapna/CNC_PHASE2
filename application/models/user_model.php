@@ -48,7 +48,8 @@ class user_model extends CI_Model {
 	$qry=$this->db->query($query);
 	$flag=1;
 	}elseif($tbl=='available_vehicles'){
-	$query='SELECT * FROM vehicles WHERE  organisation_id='.$org_id.' ';
+	//$query='SELECT * FROM vehicles WHERE  organisation_id='.$org_id.' ';
+	$query='SELECT id, SUBSTR(registration_number, -4)as registration_number FROM vehicles WHERE organisation_id='.$org_id;
 	$qry=$this->db->query($query);
 	$flag=2;
 	}elseif($tbl=='available_drivers'){

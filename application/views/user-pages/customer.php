@@ -53,65 +53,106 @@
 	?>
 
     </ul>
+
     <div class="tab-content">
 
 	<?php if (array_key_exists('c_tab', $tabs)) {?>
 	<div class="<?php echo $tabs['c_tab']['content_class'];?>" id="<?php echo $tabs['c_tab']['tab_id'];?>">
-            		 <div class="profile-body width-80-percent-and-margin-auto">
-			<fieldset class="body-border">
-   			 <legend class="body-head">Personal Details</legend>
-			 <div class="nav-tabs-custom">
-				
-				<div class="tab-content">
-				
-				<div class="tab-pane active" id="tab_1">
+	<div class="profile-body width-80-percent-and-margin-auto">
+		<fieldset class="body-border">
+   		<legend class="body-head">Personal Details</legend>
+			 
 			<div class="div-with-50-percent-width-with-margin-10">
-				<?php echo form_open(base_url().'customers/AddUpdate');?>
+			<?php echo form_open(base_url().'customers/AddUpdate');?>
 				
 				<div class="form-group">
-					<?php echo form_label('Name','namelabel'); ?>
-				    <?php echo form_input(array('name'=>'name','class'=>'form-control','placeholder'=>'Enter Name','value'=>$name)); ?>
-					<?php echo $this->form_functions->form_error_session('name', '<p class="text-red">', '</p>'); ?>
+				<?php echo form_label('Name','namelabel'); ?>
+				<?php 
+				$input = array('name'=>'name','class'=>'form-control',
+						'placeholder'=>'Enter Name','value'=>$name);
+				if(!$edit_profile)					
+					$input['disabled'] ='';
+				echo form_input($input);
+		 		echo $this->form_functions->form_error_session('name', '<p class="text-red">', '</p>'); 
+				?>
 				</div>
 			
 				<div class="form-group">
-					<?php echo form_label('Email','emaillabel'); ?>
-				    <?php echo form_input(array('name'=>'email','class'=>'form-control','placeholder'=>'Enter email','value'=>$email)); 
-					if($customer_id!='' && $customer_id>gINVALID) {  ?><div class="hide-me"> <?php echo form_input(array('name'=>'h_email','class'=>'form-control','value'=>$email)); ?></div><?php } ?>
+				<?php echo form_label('Email','emaillabel'); ?>
+				<?php 
+					$input = array('name'=>'email',
+						'class'=>'form-control',
+						'placeholder'=>'Enter email','value'=>$email);
+					if(!$edit_profile)					
+						$input['disabled'] ='';
+					echo form_input($input);
+					if($customer_id!='' && $customer_id>0) {  ?>
+					<div class="hide-me"> 
+					<?php echo form_input(array('name'=>'h_email','class'=>'form-control','value'=>$email)); ?>
+					</div>
+					<?php } ?>
+
 					<?php echo $this->form_functions->form_error_session('email', '<p class="text-red">', '</p>'); ?>
 				</div>
+
 				<div class="form-group">
-					<?php echo form_label('Date Of Birth ','doblabel'); ?>
-				    <?php echo form_input(array('name'=>'dob','class'=>'form-control initialize-date-picker','placeholder'=>'Enter DOB','value'=>$dob)); 
-					 echo $this->form_functions->form_error_session('dob', '<p class="text-red">', '</p>'); ?>
+				<?php echo form_label('Date Of Birth ','doblabel'); ?>
+				<?php 
+
+					$input = array('name'=>'dob',
+						'class'=>'form-control initialize-date-picker',
+						'placeholder'=>'Enter DOB','value'=>$dob);
+					if(!$edit_profile)					
+						$input['disabled'] ='';
+					echo form_input($input);
+
+					echo $this->form_functions->form_error_session('dob', '<p class="text-red">', '</p>'); ?>
 				</div>
+
 				<div class="form-group">
 					<?php echo form_label('Phone','phonelabel'); ?>
-				    <?php echo form_input(array('name'=>'mobile','class'=>'form-control','placeholder'=>'Enter Phone','value'=>$mobile)); 
-					if($customer_id!='' && $customer_id>gINVALID) {  ?><div class="hide-me"> <?php echo form_input(array('name'=>'h_phone','value'=>$mobile)); ?></div><?php } ?>
-					<?php echo $this->form_functions->form_error_session('mobile', '<p class="text-red">', '</p>'); ?>
+					<?php 
+						$input = array('name'=>'mobile',
+							'class'=>'form-control','placeholder'=>'Enter Phone',
+							'value'=>$mobile);
+						if(!$edit_profile)					
+							$input['disabled'] ='';
+						echo form_input($input);
+						if($customer_id!='' && $customer_id>0) {  ?>
+						<div class="hide-me"> 
+							<?php echo form_input(array('name'=>'h_phone','value'=>$mobile)); ?></div><?php } ?>
+							<?php echo $this->form_functions->form_error_session('mobile', '<p class="text-red">', '</p>'); ?>
 				</div>
 			
 				<div class="form-group">
 					<?php echo form_label('Customer Type','ctypelabel'); 
-				   $class="form-control customer-type";
-					echo $this->form_functions->populate_dropdown('customer_type_id',$customer_types,$customer_type_id,$class,$id='',$msg="Select Customer type");?> 
+				   	$class="form-control customer-type";
+					$disabled=($edit_profile)?'':'disabled';
+					echo $this->form_functions->populate_dropdown('customer_type_id',$customer_types,$customer_type_id,$class,$id='',$msg="Select Customer type",$disabled);?> 
 				</div>
+
 				<div class="form-group">
 					<?php echo form_label('Customer Group','cgrouplabel'); ?>
-				   <?php echo $this->form_functions->populate_dropdown('customer_group_id',$customer_groups,$customer_group_id,$class ='form-control',$id='',$msg="Select Groups"); ?>
+				   <?php echo $this->form_functions->populate_dropdown('customer_group_id',$customer_groups,$customer_group_id,$class ='form-control',$id='',$msg="Select Groups",$disabled); ?>
 					
 				</div>
 			</div>
+
 			<div class="div-with-50-percent-width-with-margin-10">
 				
 				<div class="form-group">
 					<?php echo form_label('Address','addresslabel'); ?>
-				    <?php echo form_textarea(array('name'=>'address','class'=>'form-control','placeholder'=>'Enter Address','value'=>$address,'rows'=>4)); ?>
+				    <?php 
+					$input = array('name'=>'address','class'=>'form-control',
+							'placeholder'=>'Enter Address','value'=>$address,'rows'=>4);
+					if(!$edit_profile)					
+						$input['disabled'] ='';
+
+					echo form_textarea($input); ?>
 					<?php echo form_error('address', '<p class="text-red">', '</p>'); ?>
 				</div>
 
-				<?php if($customer_id!='' && $customer_id>gINVALID){?>
+				<?php if($customer_id!='' && $customer_id>0){?>
 				<div class="form-group">
 				   <?php echo form_label('Username','usernamelabel');
 					
@@ -150,10 +191,9 @@
 				?></div>
 			 <?php echo form_close(); ?>
 			</div>
-			</div>
-		 
-			</fieldset>
-		</div>
+
+		</fieldset>
+	</div>
 	</div>
 	<?php }?>
 

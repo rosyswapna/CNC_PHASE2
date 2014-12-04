@@ -1,8 +1,8 @@
 <?php 
 class Form_functions{
-function populate_dropdown($name = '', $options = array(), $selected = array(),$class='',$id='',$msg='select'){
+function populate_dropdown($name = '', $options = array(), $selected = array(),$class='',$id='',$msg='select',$disabled=''){
 $CI = & get_instance();
-$form = '<select name="'.$name.'" class="'.$class.'" id="'.$id.'"/>';
+$form = '<select name="'.$name.'" class="'.$class.'" id="'.$id.'" '.$disabled.'/>';
 if($selected==''){
 $form.='<option value="-1" selected="selected" >--'.$msg.'--</option></br>';
 }
