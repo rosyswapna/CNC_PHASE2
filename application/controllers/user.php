@@ -709,7 +709,8 @@ class User extends CI_Controller {
 				}
 				}
 			}
-			$qry.=' order by T.id desc';
+			//$qry.=' order by T.id desc';
+			$qry.=' order by CONCAT( T.pick_up_date, " ", T.pick_up_time ) ASC';
 			
 			$tbl_arry=array('trip_statuses','customer_groups');
 	
@@ -747,6 +748,7 @@ class User extends CI_Controller {
 
 			//input hide class if needed
 			$data['input_class'] = $this->trip_filter_inputs();
+			$data['trip_action_allowed'] = $this->trip_action_allowed();
 
 			
 		    	$this->load_templates($page,$data);
@@ -765,6 +767,17 @@ class User extends CI_Controller {
 		}
 		return $inputs;
 		
+	}
+
+	//actions for trip list table filter by user type in session
+	function trip_action_allowed(){
+		
+		if($this->session->userdata('type')==CUSTOMER){
+			$actions = array();
+		}else{
+			$actions = array('edit','complete','new_voucher','edit_voucher');
+		}
+		return $actions;
 	}
 	
 	public function Customer($param2=''){
