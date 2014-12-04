@@ -586,6 +586,8 @@ class User extends CI_Controller {
 
 	}
 	public function Trips($param2){
+
+
 		if($this->session_check()==true || $this->customer_session_check()==true) {
 			$like_arry='';
 			$where_arry='';
@@ -612,24 +614,23 @@ class User extends CI_Controller {
 			if($param2=='1' ){
 				$param2='0';
 			}
-			//$where_arry['organisation_id']=$this->session->userdata('organisation_id');
-			//$order_arry="id desc";
+			
 			if((isset($_REQUEST['trip_pick_date'])|| isset($_REQUEST['trip_drop_date'])|| isset($_REQUEST['vehicles'])|| isset($_REQUEST['drivers'])|| isset($_REQUEST['trip_status_id'])|| isset($_REQUEST['cgroup'])||isset($_REQUEST['customer']))&& isset($_REQUEST['trip_search'])){
 				if($param2==''){
-				$param2='0';
+					$param2='0';
 				}
 				
 				if($_REQUEST['trip_pick_date']!=null && $_REQUEST['trip_drop_date']!=null){
 					$data['trip_pick_date']=$_REQUEST['trip_pick_date'];
 					$data['trip_drop_date']=$_REQUEST['trip_drop_date'];
 					$qry.=' AND (T.drop_date BETWEEN "'.$_REQUEST['trip_pick_date'].'" AND "'.$_REQUEST['trip_drop_date'].'")';
-					//$qry.=' AND T.pick_up_date BETWEEN "'.$_REQUEST['trip_pick_date'].'" AND "'.$_REQUEST['trip_drop_date'].'" AND T.drop_date BETWEEN "'.$_REQUEST['trip_pick_date'].'" AND "'.$_REQUEST['trip_drop_date'].'"';		
+					
 					$where_arry['trip_pick_date']=$_REQUEST['trip_pick_date'];
 					$where_arry['trip_drop_date']=$_REQUEST['trip_drop_date'];
 				}else if($_REQUEST['trip_pick_date']!=null){
 				$data['trip_pick_date']=$_REQUEST['trip_pick_date'];
 				$qry.=' AND  (T.pick_up_date="'.$_REQUEST['trip_pick_date'].'" or "'.$_REQUEST['trip_pick_date'].'" BETWEEN T.pick_up_date and T.drop_date)';
-				//$qry.=' AND (T.pick_up_date="'.$_REQUEST['trip_pick_date'].'" OR T.drop_date="'.$_REQUEST['trip_pick_date'].'") ';
+				
 				$where_arry['trip_pick_date']=$_REQUEST['trip_pick_date'];
 				}else if($_REQUEST['trip_drop_date']!=null){
 				$data['trip_drop_date']=$_REQUEST['trip_drop_date'];
@@ -662,26 +663,22 @@ class User extends CI_Controller {
 					$like_arry['customer_name']=$_REQUEST['customer'];
 				}
 				if(isset($where_arry)|| isset($like_arry)){
-				$this->mysession->set('condition',array("where"=>$where_arry,"like"=>$like_arry));
+					$this->mysession->set('condition',array("where"=>$where_arry,"like"=>$like_arry));
 				}
 				
 			}else if($this->mysession->get('condition')!=''){ 
 				$condition=$this->mysession->get('condition');
 				if(isset($condition['where']['trip_pick_date']) || isset($condition['where']['trip_drop_date'])|| isset($condition['where']['vehicle_id']) || isset($condition['where']['driver_id'])|| isset($condition['where']['trip_status_id'])){
-				//print_r($condition);
-				/*if(isset($condition['where']['trip_id'])){
-				$data['trip_id']=$condition['where']['trip_id'];
-				$qry.=' AND T.id ='.$condition['where']['trip_id'];
-				}*/
+				
 				if($condition['where']['trip_pick_date']!=null || $condition['where']['trip_drop_date']!=null || $condition['where']['vehicle_id']!=null || $condition['where']['driver_id']!=null || $condition['where']['trip_status_id']!=null){
 				if(isset($condition['where']['trip_pick_date'])  && isset($condition['where']['trip_drop_date']) ){
 				$data['trip_pick_date']=$condition['where']['trip_pick_date'];
 				$data['trip_drop_date']=$condition['where']['trip_drop_date'];
-				//$qry.=' AND T.pick_up_date >="'.$condition['where']['trip_pick_date'].'" AND T.drop_date <="'.$condition['where']['trip_drop_date'].'"';
+				
 				$qry.=' AND T.pick_up_date BETWEEN "'.$condition['where']['trip_pick_date'].'" AND "'.$condition['where']['trip_drop_date'].'" AND T.drop_date BETWEEN "'.$condition['where']['trip_pick_date'].'" AND "'.$condition['where']['trip_drop_date'].'"';
 				}else if(isset($condition['where']['trip_pick_date'])){
 				$data['trip_pick_date']=$condition['where']['trip_pick_date'];
-				//$qry.=' AND T.pick_up_date ="'.$condition['where']['trip_pick_date'].'"';
+				
 				$qry.=' AND (T.pick_up_date="'.$condition['where']['trip_pick_date'].'" OR T.drop_date="'.$condition['where']['trip_pick_date'].'") OR ((T.pick_up_date <= "'.$condition['where']['trip_pick_date'].'" AND T.drop_date >= "'.$condition['where']['trip_pick_date'].'"))';
 				}else if(isset($condition['where']['trip_drop_date'])){
 				$data['trip_drop_date']=$condition['where']['trip_drop_date'];
@@ -710,28 +707,25 @@ class User extends CI_Controller {
 				$qry.=' And C.name Like "%'.$condition['like']['customer_name'].'%"';
 				}
 				}
-			}
+				}
 			}
 			$qry.=' order by T.id desc';
 			
 			$tbl_arry=array('trip_statuses','customer_groups');
 	
 			for ($i=0;$i<count($tbl_arry);$i++){
-			$result=$this->user_model->getArray($tbl_arry[$i]);
-			if($result!=false){
-			$data[$tbl_arry[$i]]=$result;
+				$result=$this->user_model->getArray($tbl_arry[$i]);
+				if($result!=false){
+				$data[$tbl_arry[$i]]=$result;
+				}
+				else{
+				$data[$tbl_arry[$i]]='';
+				}
 			}
-			else{
-			$data[$tbl_arry[$i]]='';
-			}
-			}
-			/*if($param2=='1'){
-				$param2=0;
-			}*/
-			//echo $qry;exit;
+			
 			$this->load->model('account_model');
 			$data['taxes']=$this->account_model->getTaxArray($condition='');
-			//print_r($data['taxes']);exit;
+			
 
 			$data['vehicles']=$this->trip_booking_model->getVehiclesArray($condition='');
 			$data['drivers']=$this->driver_model->getDriversArray($condition=''); 
@@ -744,19 +738,34 @@ class User extends CI_Controller {
 			if(empty($data['trips'])){
 				$data['result']="No Results Found !";
 					}
-			//echo '<pre>';print_r($data['trips']);echo '</pre>';exit;
-			//$data['trips']=$this->trip_booking_model->getDetails($conditon='');echo '<pre>';print_r($data['trips']);echo '</pre>';exit;
+			
 			$data['status_class']=array(TRIP_STATUS_PENDING=>'label-warning',TRIP_STATUS_CONFIRMED=>'label-success',TRIP_STATUS_CANCELLED=>'label-danger',TRIP_STATUS_CUSTOMER_CANCELLED=>'label-danger',TRIP_STATUS_ON_TRIP=>'label-primary',TRIP_STATUS_TRIP_COMPLETED=>'label-success',TRIP_STATUS_TRIP_PAYED=>'label-info',TRIP_STATUS_TRIP_BILLED=>'label-success');
 			$data['trip_statuses']=$this->user_model->getArray('trip_statuses'); 
 			$data['customers']=$this->customers_model->getArray();
 			$data['title']="Trips | ".PRODUCT_NAME;  
 			$page='user-pages/trips';
-		    $this->load_templates($page,$data);
+
+			//input hide class if needed
+			$data['input_class'] = $this->trip_filter_inputs();
+
+			
+		    	$this->load_templates($page,$data);
 		    }else{
 				$this->notAuthorized();
-			}
+		    }
 		
 	}	
+
+	//show or hide input based on session check, for trip list page inputs
+	function trip_filter_inputs(){
+		$inputs= array('trip_pick_date'=>'','trip_drop_date'=>'','vehicles' => '',
+				'drivers' => '','trip_status_id' => '','cgroups' => '','customer' => '');
+		if($this->session->userdata('type')==CUSTOMER){
+			$inputs['vehicles']=$inputs['drivers']=$inputs['cgroups']=$inputs['customer']=' hide-me';
+		}
+		return $inputs;
+		
+	}
 	
 	public function Customer($param2=''){
 		if($this->session_check()==true || $this->customer_session_check()==true) {

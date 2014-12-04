@@ -54,28 +54,38 @@ $trip_sl_no=$page;
 			<?php echo form_open(base_url()."organization/front-desk/trips"); ?>
 			<table class="table list-trip-table no-border">
 				<tbody>
-					<tr>
-						<!---->
-					    <td><?php echo form_input(array('name'=>'trip_pick_date','class'=>'pickupdatepicker initialize-date-picker form-control' ,'placeholder'=>'Pick up Date','value'=>$trip_pick_date)); ?></td>
-					    <td><?php  echo form_input(array('name'=>'trip_drop_date','class'=>'dropdatepicker initialize-date-picker form-control' ,'placeholder'=>'Drop Date','value'=>$trip_drop_date)); ?></td>
-						 <td><?php $class="form-control";
-							  $id='vehicles';
-						echo $this->form_functions->populate_dropdown('vehicles',$vehicles,$vehicle_id,$class,$id,$msg="Vehicle");?></td>
-						 <td><?php $class="form-control";
-							  $id='drivers';
-						echo $this->form_functions->populate_dropdown('drivers',$drivers,$driver_id,$class,$id,$msg="Driver");?></td>
-						<td><?php $class="form-control";
-							  $id='trip-status';
-						echo $this->form_functions->populate_dropdown('trip_status_id',$trip_statuses,$trip_status_id,$class,$id,$msg="Trip Status");?></td>
-					     <td><?php $class="form-control";
-							  $id='cgroups';
-						echo $this->form_functions->populate_dropdown('cgroups',$customer_groups,$customer_group_id,$class,$id,$msg="Company");?></td>
-						<td><?php echo form_input(array('name'=>'customer','class'=>'customer form-control' ,'placeholder'=>'Name','value'=>$customer_name,'id'=>'c_name')); ?></td>
-						<td><?php echo form_submit("trip_search","Search","class='btn btn-primary'");
-echo form_close();?></td>
-					<td><?php echo form_button('print-trip','Print',"class='btn btn-primary print-trip'"); ?></td>
-						
-					</tr>
+				<tr>
+					
+					<td><?php 
+	$class = 'pickupdatepicker initialize-date-picker form-control'.$input_class['trip_pick_date'];
+	echo form_input(array('name'=>'trip_pick_date','class'=>$class,'placeholder'=>'Pick up Date','value'=>$trip_pick_date)); ?></td>
+					<td><?php  
+	$class = 'dropdatepicker initialize-date-picker form-control'.$input_class['trip_drop_date'];
+	echo form_input(array('name'=>'trip_drop_date','class'=>$class ,'placeholder'=>'Drop Date','value'=>$trip_drop_date)); ?></td>
+					<td><?php 
+	$class="form-control".$input_class['vehicles'];$id='vehicles';
+	echo $this->form_functions->populate_dropdown('vehicles',$vehicles,$vehicle_id,$class,$id,$msg="Vehicle");?></td>
+					<td><?php 
+	$class="form-control".$input_class['drivers'];$id='drivers';
+	echo $this->form_functions->populate_dropdown('drivers',$drivers,$driver_id,$class,$id,$msg="Driver");?></td>
+
+					<td><?php 
+	$class="form-control".$input_class['trip_status_id']; $id='trip-status';
+	echo $this->form_functions->populate_dropdown('trip_status_id',$trip_statuses,$trip_status_id,$class,$id,$msg="Trip Status");?></td>
+					<td><?php 
+	$class="form-control".$input_class['cgroups']; $id='cgroups';
+	echo $this->form_functions->populate_dropdown('cgroups',$customer_groups,$customer_group_id,$class,$id,$msg="Company");?></td>
+					<td><?php
+	$class =  'customer form-control'.$input_class['customer'];
+	echo form_input(array('name'=>'customer','class'=>$class ,'placeholder'=>'Name','value'=>$customer_name,'id'=>'c_name')); ?></td>
+					<td><?php 
+	echo form_submit("trip_search","Search","class='btn btn-primary'");
+	echo form_close();?></td>
+
+					<td><?php 
+	echo form_button('print-trip','Print',"class='btn btn-primary print-trip'"); ?></td>	
+
+				</tr>
 				</tbody>
 			</table>
 		</div>
