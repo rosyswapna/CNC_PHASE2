@@ -809,12 +809,10 @@ class User extends CI_Controller {
 					} else{
 					$fdate=$_REQUEST['from_pick_date'];
 					$todate=$_REQUEST['to_pick_date']; }
-					//$data['trip_tab']='active';
 					$active_tab = 't_tab';//trip tab
 				}
 				$data['trips']=$this->trip_booking_model->getCustomerVouchers($param2,$fdate,$todate);
 			}
-			//$data['cust_tab']='active';
 
 			$data['tabs'] = $this->set_up_customer_tabs($active_tab,$param2);
 

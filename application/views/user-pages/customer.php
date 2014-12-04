@@ -45,104 +45,13 @@
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
 	<?php 
-
-/*
-		if(isset($insurance_tab)){
-			$ins_class=$insurance_tab;
-			$i_tab="tab-pane active";
-		}
-		else{
-			$ins_class='';
-			$i_tab="tab-pane ";
-		}
-
-		if(isset($trip_tab)){
-			$trip_class=$trip_tab;
-			$t_tab="tab-pane active";
-		}
-		else{
-			$trip_class='';
-			$t_tab="tab-pane ";
-		}
-
-		if(isset($cust_tab)){ 
-			$cust_class=$cust_tab;
-			$c_tab="tab-pane active";
-		}
-		else{
-			$cust_class='';
-			$c_tab="tab-pane";
-		}
-
-		if(isset($loan_tab)){
-			$loan_class=$loan_tab;
-			$l_tab="tab-pane active";
-		}
-		else{
-			$loan_class='';
-			$l_tab="tab-pane ";
-		}
-
-		if(isset($owner_tab)){
-			$owner_class=$owner_tab;
-			$o_tab="tab-pane active";
-		}
-		else{
-			$owner_class='';
-			$o_tab="tab-pane ";
-		}
-		if(isset($trip_tab)){
-			$trip_class=$trip_tab;
-			$t_tab="tab-pane active";
-			$c_tab="tab-pane";
-			$cust_class='';
-		}
-		else{
-			$trip_class='';
-			$t_tab="tab-pane ";
-		}
-
-		if(isset($pay_tab)){
-			$pay_class=$pay_tab;
-			$p_tab="tab-pane active";
-		}
-		else{
-			$pay_class='';
-			$p_tab="tab-pane";
-		}
-
-		if(isset($acc_tab)){
-			$acc_class=$acc_tab;
-			$a_tab="tab-pane active";
-		}
-		else{
-			$acc_class='';
-			$a_tab="tab-pane ";
-		}
-	*/
-
-		//array of tabs for this page
-		//echo "<pre>";
-		//print_r($tabs);
-		//echo "</pre>";
-		//exit;
-
 		foreach($tabs as $tab=>$attr){
 			echo '<li class="'.$attr['class'].'">
 				<a href="#'.$attr['tab_id'].'" data-toggle="tab">'.$attr['text'].'</a>
 			      </li>';
 		}
- 
-
 	?>
-<!--
-        <li class="<?php echo $cust_class;?>"><a href="#tab_1" data-toggle="tab">Profile</a></li>
-	<?php if(isset($mode)&& $mode!='' ){?>
-	<li class="<?php echo $trip_class;?>"><a href="#tab_2" data-toggle="tab">Trip</a></li>
-        <li class="<?php echo $pay_class;?>"><a href="#tab_3" data-toggle="tab">Payments</a></li>
-        <li class="<?php echo $acc_class;?>"><a href="#tab_4" data-toggle="tab">Accounts</a></li>
-       <?php } ?>
--->
+
     </ul>
     <div class="tab-content">
 
