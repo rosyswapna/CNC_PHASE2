@@ -76,7 +76,7 @@ class Account extends CI_Controller {
 	//organisation user pages from fa
 	public function front_desk($action='None',$value='',$tab = false){
 		
-		if($this->org_user_session_check()==true) {
+		if($this->org_user_session_check()==true || $this->customer_session_check()==true) {
 			$data['title'] =$action." | ".PRODUCT_NAME;
 			if($value)
 				$data['url'] = "facnc/sync_cnc.php?".$action."=".$value."&cnc_token=".$this->session->userdata('session_id');
@@ -98,6 +98,8 @@ class Account extends CI_Controller {
 		}
 	}
 
+
+	
 
 	//cnc organization user create user account in fa
 	public function add_user($user_id = -1)
@@ -158,7 +160,15 @@ class Account extends CI_Controller {
 	}
 
 	public function org_user_session_check() {
-		if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==FRONT_DESK)) 	{
+		if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==FRONT_DESK)) 		{
+			return true;
+		} else {
+			return false;
+		}
+	} 
+
+	public function customer_session_check() {
+		if(($this->session->userdata('isLoggedIn')==true )&&($this->session->userdata('type')== CUSTOMER)) 		{
 			return true;
 		} else {
 			return false;

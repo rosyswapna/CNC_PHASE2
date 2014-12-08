@@ -781,7 +781,7 @@ class User extends CI_Controller {
 	}
 	
 	public function Customer($param2=''){
-		if($this->session_check()==true || $this->customer_session_check()==true) {
+		if($this->session_check()==true || ($param2==$this->session->userdata['customer']->id && $this->customer_session_check()==true)) {
 					
 			if($param2!=''){
 				//$condition=array('id'=>$param2);

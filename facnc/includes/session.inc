@@ -465,11 +465,21 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 			if($cnc_session != false && $cnc_session['user_data'] != ""){
 				$_SESSION['cnc_token'] = $_GET['cnc_token'];
 				$cnc_data = unserialize($cnc_session['user_data']);
+			
+				if(isset($cnc_data['customer'])){
+					$org_login = get_organisation_login($cnc_data['customer']->user_id);
+					$_SESSION['cnc_customer'] = $cnc_data['customer']->id;
+					$_POST["company_login_name"] = $org_login[0];
+					$_POST["user_name_entry_field"] = $org_login[1];
+					$_POST["password"] = $org_login[2];
+				}else{
+					$_POST["company_login_name"] = (isset($cnc_data['organisation_id']))?$cnc_data['organisation_id']:0;
+					$_POST["user_name_entry_field"] = $cnc_data['username'];
+					$_POST["password"] = $cnc_data['token_pass'];
 
-				$_POST["company_login_name"] = (isset($cnc_data['organisation_id']))?$cnc_data['organisation_id']:0;
-				$_POST["user_name_entry_field"] = $cnc_data['username'];
-				$_POST["password"] = $cnc_data['token_pass'];
-//print_r($_POST);exit;
+
+				}
+				//echo "<pre>";print_r($_POST);echo "</pre>";exit;
 
 			}else{
 				$_SESSION["wa_current_user"]->logged = false;

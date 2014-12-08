@@ -38,7 +38,10 @@ if (!@$_GET['popup'])
 	}
 }
 
-if (isset($_GET['customer_id']))
+if (isset($_SESSION['cnc_customer'])){
+	 	
+	$_POST['customer_id'] = get_cnc_customer_id('C'.$_SESSION['cnc_customer']);
+}else if (isset($_GET['customer_id']))
 {
 	$_POST['customer_id'] = $_GET['customer_id'];
 }
