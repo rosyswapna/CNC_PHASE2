@@ -1302,34 +1302,35 @@ if(isset($where_arry) || isset($like_arry)){
 	}
 	}
 		
-		public function ShowDriverProfile($param1,$param2){
-			if($this->session_check()==true) {
+	public function ShowDriverProfile($param1,$param2){
+		if($this->session_check()==true) {
 			$data['mode']=$param2;
 			if($param2!=null&& $param2!=gINVALID){
-			$org_id=$this->session->userdata('organisation_id');
-			$arry=array('id'=>$param2,'organisation_id'=>$org_id);
-			$data['result']=$this->user_model->getDriverDetails($arry);
+				$org_id=$this->session->userdata('organisation_id');	
+				$arry=array('id'=>$param2,'organisation_id'=>$org_id);
+				//$data['result']=$this->user_model->getDriverDetails($arry);
+				$data['result']=$this->user_model->getDriverUser($param2);
 			}   
 			//trip details
-		
+	
 			if($param2!=''){
-			$tdate=date('Y-m-d');
-			$date=explode("-",$tdate);
-			$fdate='2014-'.$date[1].'-01';
-			$todate='2014-'.$date[1].'-31';
-			
-			if((isset($_REQUEST['from_pick_date'])|| isset($_REQUEST['to_pick_date']))&& isset($_REQUEST['date_search'])){
-			if($_REQUEST['from_pick_date']==null && $_REQUEST['to_pick_date']==null){
-			$fdate='2014-'.$date[1].'-01';
-			$todate='2014-'.$date[1].'-31';
-			} else{
-			$fdate=$_REQUEST['from_pick_date'];
-			$todate=$_REQUEST['to_pick_date']; }
-			$data['trip_tab']='active';
-			
-			}
-			$data['trips']=$this->trip_booking_model->getDriverVouchers($param2,$fdate,$todate);
-			//$this->mysession->set('trips',$data['trips']);
+				$tdate=date('Y-m-d');
+				$date=explode("-",$tdate);
+				$fdate='2014-'.$date[1].'-01';
+				$todate='2014-'.$date[1].'-31';
+		
+				if((isset($_REQUEST['from_pick_date'])|| isset($_REQUEST['to_pick_date']))&& isset($_REQUEST['date_search'])){
+					if($_REQUEST['from_pick_date']==null && $_REQUEST['to_pick_date']==null){
+						$fdate='2014-'.$date[1].'-01';
+						$todate='2014-'.$date[1].'-31';
+					} else{
+					$fdate=$_REQUEST['from_pick_date'];
+					$todate=$_REQUEST['to_pick_date']; }
+					$data['trip_tab']='active';
+		
+				}
+				$data['trips']=$this->trip_booking_model->getDriverVouchers($param2,$fdate,$todate);
+				//$this->mysession->set('trips',$data['trips']);
 			}
 			$data['driver_tab']='active';
 			//print_r($data['trips']);exit;
@@ -1338,11 +1339,10 @@ if(isset($where_arry) || isset($like_arry)){
 			$data['d_id']=$param2;
 			$data['select']=$this->select_Box_Values();
 			$this->load_templates($page,$data);
-		
-			}
-			else{
-					$this->notAuthorized();
-			}
+		}
+		else{
+				$this->notAuthorized();
+		}
 	}
 
 	public function tripVouchers($param2){

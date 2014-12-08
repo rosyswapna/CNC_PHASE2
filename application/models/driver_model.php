@@ -1,12 +1,47 @@
 <?php
 class Driver_model extends CI_Model {
-public function addDriverdetails($data){
 
-	$this->db->set('salary', '2500');
-	$this->db->set('minimum_working_days', '25');
-	$this->db->set('created', 'NOW()', FALSE);
-	$this->db->insert('drivers',$data);
-	return $this->db->insert_id();
+
+public function addDriverdetails($data,$login=false){
+
+	$org_id=$this->session->userdata('organisation_id');
+	if($org_id && $login){
+		//add driver login details
+		$userdata=array(
+				'username'=>$login['username'],
+				'password'=>md5($login['password']),
+				'first_name'=>$data['name'],
+				'phone'=>$data['mobile'],
+				'address'=>$data['address'],
+				'user_status_id'=>USER_STATUS_ACTIVE,
+				'user_type_id'=>DRIVER,
+				'email'=>$data['email'],
+				'organisation_id'=>$org_id);
+
+		$this->db->set('created', 'NOW()', FALSE);
+		$this->db->insert('users',$userdata);
+		$login_id = $this->db->insert_id();
+
+		if($login_id > 0){
+			$data['login_id'] = $login_id;
+			$this->db->set('salary', '2500');
+			$this->db->set('minimum_working_days', '25');
+			$this->db->set('created', 'NOW()', FALSE);
+			$this->db->insert('drivers',$data);
+			$driver = $this->db->insert_id();
+			if($driver > 0){
+				return $driver;
+			}else{
+				$this->db->delete('users', array('id' => $login_id));
+				return false;
+			}
+			
+		}else{//user not added
+				return false;
+		}
+	}else{
+		return false;
+	}
 }
 
 public function getDriverDetails($data){ 
