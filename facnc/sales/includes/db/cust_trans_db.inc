@@ -458,7 +458,7 @@ function get_sql_for_customer_inquiry()
     	}
    	}
 	$sql .= " GROUP BY trans.trans_no, trans.type";
-
+	//echo $sql;exit;
    	return $sql;
 }
 
