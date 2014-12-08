@@ -185,8 +185,11 @@
 				<?php }?>
 
 		   		<div class="box-footer">
-				<?php if($customer_id!='' && $customer_id>gINVALID){ $save_update_button='UPDATE';$class_save_update_button="class='btn btn-primary'"; }else{ $save_update_button='SAVE';$class_save_update_button="class='btn btn-success'"; }?>
-				<?php echo form_submit("customer-add-update",$save_update_button,$class_save_update_button).nbs(2).form_reset("customer_reset","RESET","class='btn btn-danger'"); ?> 
+				<?php 
+		if($customer_id!='' && $customer_id>gINVALID){ 
+			$save_update_button='UPDATE';$class_save_update_button="class='btn btn-primary'"; 
+		}else{ $save_update_button='SAVE';$class_save_update_button="class='btn btn-success'"; }?>
+				<?php if(!$this->session->userdata('customer')){echo form_submit("customer-add-update",$save_update_button,$class_save_update_button).nbs(2).form_reset("customer_reset","RESET","class='btn btn-danger'"); }?> 
 				<div class="hide-me"> <?php echo form_input(array('name'=>'customer_id','class'=>'form-control','value'=>$customer_id)); 
 				?></div>
 			 <?php echo form_close(); ?>
