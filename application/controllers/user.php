@@ -31,7 +31,15 @@ class User extends CI_Controller {
 		} else {
 			return false;
 		}
-	}    
+	}
+	public function driver_session_check() {
+		if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==DRIVER)) {
+			return true;
+		} else {
+			return false;
+		}
+	}  
+   
 	public function index(){
 		$param1=$this->uri->segment(3);
 		$param2=$this->uri->segment(4);
@@ -109,6 +117,10 @@ class User extends CI_Controller {
 				$this->Trips($param2);
 			}else{
 				$this->notAuthorized();
+			}
+		}elseif($this->driver_session_check()==true){
+			if($param1=='driver-profile'&&($param2== ''|| is_numeric($param2))){
+				$this->ShowDriverProfile($param1,$param2);
 			}
 		}else{
 			$this->notAuthorized();
@@ -889,7 +901,7 @@ class User extends CI_Controller {
 	}
 
 	public function load_templates($page='',$data=''){
-	if($this->session_check()==true || $this->customer_session_check()==true) {
+	if($this->session_check()==true || $this->customer_session_check()==true || $this->driver_session_check()==true) {
 		$this->load->view('admin-templates/header',$data);
 		$this->load->view('admin-templates/nav');
 		$this->load->view($page,$data);
@@ -1303,7 +1315,7 @@ if(isset($where_arry) || isset($like_arry)){
 	}
 		
 	public function ShowDriverProfile($param1,$param2){
-		if($this->session_check()==true) {
+		if($this->session_check()==true || $this->driver_session_check()==true) {
 			$data['mode']=$param2;
 			if($param2!=null&& $param2!=gINVALID){
 				$org_id=$this->session->userdata('organisation_id');	

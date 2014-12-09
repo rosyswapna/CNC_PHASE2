@@ -42,8 +42,6 @@ class Login_model extends CI_Model {
 				'password' => md5($password),
 				);
 
-//print_r($filter);exit;
-
         	$this->db->from('users');
         	$this->db->where($filter);
         	$login = $this->db->get()->result();
@@ -90,7 +88,7 @@ class Login_model extends CI_Model {
    	}
 
 
-	//set customer session 
+	//set user session 
 	function set_session() {
 		$this->session->set_userdata( array(
 			'id'=>$this->details->id,
@@ -109,6 +107,11 @@ class Login_model extends CI_Model {
         		$this->db->where('login_id', $this->details->id);
         		$customer = $this->db->get()->result();
 			$this->session->set_userdata('customer',$customer[0]);
+		}elseif($this->details->user_type_id == DRIVER){
+			$this->db->from('drivers');
+        		$this->db->where('login_id', $this->details->id);
+        		$driver = $this->db->get()->result();
+			$this->session->set_userdata('driver',$driver[0]);
 		}
 	}
 
