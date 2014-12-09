@@ -67,6 +67,29 @@ class Login_model extends CI_Model {
 		}
    	}
 
+
+	function changePassword($data) {
+		$this->db->from('users');
+        	$this->db->where('id',$this->session->userdata('id'));
+        	$this->db->where( 'password', $data['old_password']);
+        	$changepassword = $this->db->get()->result();
+		if ( is_array($changepassword) && count($changepassword) == 1 ) {
+			$dbdata=array('password'=>$data['password']);
+			$this->db->where('id',$this->session->userdata('id') );
+			$succes=$this->db->update('users',$dbdata);
+			if($succes > 0) {
+				$this->session->set_userdata(array('dbSuccess'=>'Password changed Successfully'));
+				$this->session->set_userdata(array('dbError'=>''));
+				return true;
+			}
+		}else{
+			$this->session->set_userdata(array('dbError'=>'Current Password seems to be different'));
+			return false;
+		}
+
+   	}
+
+
 	//set customer session 
 	function set_session() {
 		$this->session->set_userdata( array(
@@ -77,7 +100,8 @@ class Login_model extends CI_Model {
 			'organisation_id'=>$this->details->organisation_id,
 			'type'=>$this->details->user_type_id,
 			'isLoggedIn'=>true,
-			'token_pass' =>$this->details->password
+			'token_pass' =>$this->details->password,
+			'fa_account' =>$this->details->fa_account
 			));
 
 		if($this->details->user_type_id == CUSTOMER){

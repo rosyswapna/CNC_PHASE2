@@ -2,15 +2,17 @@
 
 class Organization extends CI_Controller {
 
-public function __construct()
-{
-    parent::__construct();
-    $this->load->helper('my_helper');
-    no_cache();
+	public function __construct()
+	{
+	    parent::__construct();
+	    $this->load->helper('my_helper');
+	    no_cache();
 
-}
+	}
+
 	 public function index($param1 ='',$param2='',$param3 ='',$param4='')
 		{
+
 		if($param1=='login' && $param2=='' && $param3==''){
 
 			$this->checking_credentials();

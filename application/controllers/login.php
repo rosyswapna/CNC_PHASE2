@@ -13,22 +13,16 @@ class Login extends CI_Controller {
 
 	}
 	
-	public function index($param1 ='',$param2='',$param3 ='',$param4='')
+	public function index($param1 ='')
 	{
-		if($param1=='login' && $param2=='' && $param3==''){
+		if($param1=='login'){
 
 			$this->checking_credentials();
 
-		 }elseif($param1=='admin' && $param2=='' && $param3==''){
-			$this->admin();
-		 }elseif($param1=='admin' && $param2=='profile' && $param3==''){
-			$this->redirect_to_profile();
-		 }elseif(($param1=='admin' || $param1=='front-desk' ) && $param2=='changepassword' && $param3==''){ 
+		 }elseif($param1=='changepassword'){
 			$this->changepassword();
-		 } elseif($param1=='admin'  && $param2=='front-desk' && ($param3!= '' || $param4!= '')){
-			$this->front_desk($param3,$param4);
 		 }else{
-			$this->notFound();
+			$this->goHome();
 		}
 	
 	}
@@ -83,6 +77,54 @@ class Login extends CI_Controller {
 	}
 
 
+	public function changepassword() 
+	{
+		if($this->session_check()==true) {
+		
+			$data['old_password'] 	= '';
+			$data['password']	= '';
+			$data['cpassword']	= '';
+      			if(isset($_REQUEST['password-update'])){
+				$this->form_validation->set_rules('old_password','Current Password','trim|required|min_length[5]|max_length[12]|xss_clean');
+				$this->form_validation->set_rules('password','New Password','trim|required|min_length[5]|max_length[12]|xss_clean');
+				$this->form_validation->set_rules('cpassword','Confirm Password','trim|required|min_length[5]|max_length[12]|matches[password]|xss_clean');
+
+				$data['old_password'] = trim($this->input->post('old_password'));
+				$data['password'] = trim($this->input->post('password'));
+				$data['cpassword'] = trim($this->input->post('cpassword'));
+
+				if($this->form_validation->run() != False) {
+					$dbdata['password']  	= md5($this->input->post('password'));
+					$dbdata['old_password'] = md5(trim($this->input->post('old_password')));
+					$val    		= $this->login_model->changePassword($dbdata);
+					if($val == true) {
+						//change fa user password
+						if($this->session->userdata('fa_account') > 0){
+							$this->load->model('account_model');
+							$this->account_model->change_password($dbdata);
+						}
+						
+						$this->session->set_userdata(array('dbSuccess'=>'Password Changed Succesfully..!'));
+						redirect(base_url().'login/changepassword');
+					}else{
+						$this->show_change_password($data);
+					}
+				} else {
+					$this->show_change_password($data);
+				}
+			} else {
+			
+				$this->show_change_password($data);
+			}
+		}else{
+			$this->notAuthorized();
+		}
+		
+	}
+
+	
+
+
 	function goHome(){
 
 		if($this->session->userdata('type')==ORGANISATION_ADMINISTRATOR){
@@ -97,6 +139,31 @@ class Login extends CI_Controller {
 			redirect(base_url().'driver/home');
 		}else{
 			$this->notFound();
+		}
+	}
+
+	public function show_change_password($data = '') {
+			$data['title']="Change Password | ".PRODUCT_NAME;  
+			$page='access/change-password';
+			$this->load_templates($page,$data);
+	}
+
+	public function show_login() 
+	{   	$data['title']="Login | ".PRODUCT_NAME;	
+		$this->load->view('access/login',$data);
+		
+    	}
+
+
+	public function load_templates($page='',$data=''){
+		if($this->session_check()==true) {
+			$this->load->view('admin-templates/header',$data);
+			$this->load->view('admin-templates/nav');
+			$this->load->view($page,$data);
+			$this->load->view('admin-templates/footer');
+			}
+		else{
+				$this->notAuthorized();
 		}
 	}
 					
@@ -126,9 +193,5 @@ class Login extends CI_Controller {
 		}
 	}
 
-	public function show_login() 
-	{   	$data['title']="Login | ".PRODUCT_NAME;	
-		$this->load->view('access/login',$data);
-		
-    	}
+	
 }
