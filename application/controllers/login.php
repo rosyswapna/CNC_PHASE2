@@ -35,14 +35,12 @@ class Login extends CI_Controller {
 
 	public function checking_credentials() 
 	{
-		if($this->customer_session_check()==true){
+		if($this->session_check()==true){
 
-			redirect(base_url().'customer/home');
+			$this->goHome();
 
-		}elseif(isset($_REQUEST['username']) && isset($_REQUEST['password']))
-		{
+		}elseif(isset($_REQUEST['username']) && isset($_REQUEST['password'])){
 
-			 
 			 $username = $this->input->post('username');
 			 $this->login_model->LoginAttemptsChecks($username);
 			 if( $this->session->userdata('isloginAttemptexceeded')==false){
@@ -86,7 +84,6 @@ class Login extends CI_Controller {
 
 
 	function goHome(){
-	
 
 		if($this->session->userdata('type')==ORGANISATION_ADMINISTRATOR){
 			redirect(base_url().'organization/admin');
@@ -96,6 +93,8 @@ class Login extends CI_Controller {
 		}
 		elseif($this->session->userdata('type')==CUSTOMER){
 			redirect(base_url().'customer/home');
+		}elseif($this->session->userdata('type')==DRIVER){
+			redirect(base_url().'driver/home');
 		}else{
 			$this->notFound();
 		}
@@ -104,6 +103,23 @@ class Login extends CI_Controller {
 
 	public function customer_session_check() {
 		if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==CUSTOMER) ) 			{
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function driver_session_check() {
+		if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==DRIVER)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	//check any session exists
+	public function session_check() {
+		if($this->session->userdata('isLoggedIn')==true ){
 			return true;
 		} else {
 			return false;

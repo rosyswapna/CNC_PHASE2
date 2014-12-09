@@ -8,15 +8,17 @@ public function addDriverdetails($data,$login=false){
 	if($org_id && $login){
 		//add driver login details
 		$userdata=array(
-				'username'=>$login['username'],
-				'password'=>md5($login['password']),
-				'first_name'=>$data['name'],
-				'phone'=>$data['mobile'],
-				'address'=>$data['address'],
-				'user_status_id'=>USER_STATUS_ACTIVE,
-				'user_type_id'=>DRIVER,
-				'email'=>$data['email'],
-				'organisation_id'=>$org_id);
+				'username'	=> $login['username'],
+				'password'	=> md5($login['password']),
+				'first_name'	=> $data['name'],
+				'phone'		=> $data['mobile'],
+				'address'	=> $data['address'],
+				'user_status_id'=> USER_STATUS_ACTIVE,
+				'user_type_id'	=> DRIVER,
+				'email'		=> $data['email'],
+				'organisation_id'=> $org_id);
+
+	
 
 		$this->db->set('created', 'NOW()', FALSE);
 		$this->db->insert('users',$userdata);

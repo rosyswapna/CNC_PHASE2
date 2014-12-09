@@ -1,26 +1,67 @@
 <?php 
 class Driver extends CI_Controller {
 	public function __construct()
-		{
+	{
 		parent::__construct();
 		$this->load->model("driver_model");
 		$this->load->model('account_model');
 		$this->load->helper('my_helper');
 		no_cache();
 
+	}
+
+	//redirect driver pages
+	public function index()
+	{
+		$param1=$this->uri->segment(2);
+		$param2=$this->uri->segment(3);
+		$param3=$this->uri->segment(4);
+		if($this->driver_session_check()==true || $this->org_session_check()==true) {
+			if($param1=='' || $param1 == 'home'){
+				$this->Dashboard();
+			}
+			if($param1=='driver_manage'){
+				$this->DriverManage($param2);
+			}else{
+				$this->notAuthorized();
+			}
 		}
-		public function session_check() {
-	if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==FRONT_DESK)) {
-		return true;
-	} else {
-		return false;
+		else{
+			$this->notAuthorized();
+		}
 	}
+
+
+
+	public function Dashboard(){
+		$data['title']="Home | ".PRODUCT_NAME;    
+       		$page='driver-pages/dashboard';
+		$this->load_templates($page,$data);
 	}
+
+	public function org_session_check() {
+		if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==FRONT_DESK)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function driver_session_check() {
+		if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==DRIVER)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	//for driver view display
 
-	public function driver_manage(){
-		if($this->session_check()==true) {
+	public function DriverManage($param2=''){
+		if($this->org_session_check()==true) {
 			if(isset($_REQUEST['driver-submit'])){ 
+
+		
 				$data['name']=$this->input->post('driver_name');
 				$data['place_of_birth']=$this->input->post('place_of_birth');
 				$data['dob']=$this->input->post('dob');
@@ -119,7 +160,7 @@ class Driver extends CI_Controller {
 	
 					if($dr_id==gINVALID ){
 						$login['username']  = trim($this->input->post('username'));
-		    				$login['password '] = $this->input->post('password');
+		    				$login['password'] = $this->input->post('password');
 						$res=$this->driver_model->addDriverdetails($data,$login); 
 						//$ins_id=$this->mysession->get('vehicle_id');
 						if($res){
@@ -159,29 +200,32 @@ class Driver extends CI_Controller {
 	
 	
 	public function load_templates($page='',$data=''){
-	if($this->session_check()==true) {
+		if($this->org_session_check()==true || $this->driver_session_check()==true) {
+			$this->load->view('admin-templates/header',$data);
+			$this->load->view('admin-templates/nav');
+			$this->load->view($page,$data);
+			$this->load->view('admin-templates/footer');
+			}
+		else{
+			$this->notAuthorized();
+		}
+	}
+
+	public function notAuthorized(){
+		$data['title']='Not Authorized | '.PRODUCT_NAME;
+		$page='not_authorized';
 		$this->load->view('admin-templates/header',$data);
 		$this->load->view('admin-templates/nav');
 		$this->load->view($page,$data);
 		$this->load->view('admin-templates/footer');
-		}
-	else{
-			$this->notAuthorized();
-		}
-	}
-	public function notAuthorized(){
-	$data['title']='Not Authorized | '.PRODUCT_NAME;
-	$page='not_authorized';
-	$this->load->view('admin-templates/header',$data);
-	$this->load->view('admin-templates/nav');
-	$this->load->view($page,$data);
-	$this->load->view('admin-templates/footer');
 	
 	}	
 
 	public function date_check($date){
-	if( strtotime($date) >= strtotime(date('Y-m-d')) ){
-	return true;
-	}	
+		if( strtotime($date) >= strtotime(date('Y-m-d')) ){
+			return true;
+		}	
 	}
-	}	
+}	
+
+

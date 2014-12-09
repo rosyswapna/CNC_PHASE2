@@ -58,6 +58,7 @@ $route['login/(:any)'] = 'login/$0';
 
 
 $route['customer/(:any)'] = 'customer/index';
+$route['driver/(:any)'] = 'driver/index';
 
 
 

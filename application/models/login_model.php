@@ -42,6 +42,8 @@ class Login_model extends CI_Model {
 				'password' => md5($password),
 				);
 
+//print_r($filter);exit;
+
         	$this->db->from('users');
         	$this->db->where($filter);
         	$login = $this->db->get()->result();
