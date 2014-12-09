@@ -458,16 +458,24 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 		
 
 		if (!$_SESSION["wa_current_user"]->logged_in()){
-			
 		
 			$cnc_session = get_cnc_session($_GET['cnc_token']);
 		
 			if($cnc_session != false && $cnc_session['user_data'] != ""){
 				$_SESSION['cnc_token'] = $_GET['cnc_token'];
 				$cnc_data = unserialize($cnc_session['user_data']);
-			
-				if(isset($cnc_data['customer'])){
-					$org_login = get_organisation_login($cnc_data['customer']->user_id);
+
+				if(isset($cnc_data['customer'])||isset($cnc_data['driver'])||isset($cnc_data['owner'])){
+					if(isset($cnc_data['customer'])) {
+						$user_id = $cnc_data['customer']->user_id;
+					}elseif(isset($cnc_data['driver'])) {
+						$user_id = $cnc_data['driver']->user_id;
+					}elseif(isset($cnc_data['owner'])) {
+						$user_id = $cnc_data['owner']->user_id;
+					}else{
+						$user_id =0;
+					}
+					$org_login = get_organisation_login($user_id);
 					$_SESSION['cnc_customer'] = $cnc_data['customer']->id;
 					$_POST["company_login_name"] = $org_login[0];
 					$_POST["user_name_entry_field"] = $org_login[1];
@@ -476,9 +484,8 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 					$_POST["company_login_name"] = (isset($cnc_data['organisation_id']))?$cnc_data['organisation_id']:0;
 					$_POST["user_name_entry_field"] = $cnc_data['username'];
 					$_POST["password"] = $cnc_data['token_pass'];
-
-
 				}
+
 				//echo "<pre>";print_r($_POST);echo "</pre>";exit;
 
 			}else{
