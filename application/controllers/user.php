@@ -900,6 +900,41 @@ class User extends CI_Controller {
 		return $tabs;
 	}
 
+	/*driver page tab setting ,
+	1.first parameter is tab identifier you want set active tab, default profile
+		tabs are d_tab=>profile,t_tab=>trip , p_tab=>payments and a_tab=>accounts 
+	2.second parameter is the customer id */
+	function set_up_driver_tabs($tab_active='d_tab',$customer_id=''){
+			
+		$tabs['d_tab'] = array('class'=>'','tab_id'=>'tab_1','text'=>'Profile',
+						'content_class'=>'tab-pane');
+
+		if($customer_id!='' && $customer_id > 0){
+
+			$tabs['t_tab'] = array('class'=>'','tab_id'=>'tab_2','text'=>'Trip',
+						'content_class'=>'tab-pane');
+			if(!$this->session->userdata('customer')){
+				$tabs['p_tab'] = array('class'=>'','tab_id'=>'tab_3','text'=>'Payments',
+						'content_class'=>'tab-pane');
+					
+			}
+			$tabs['a_tab'] = array('class'=>'','tab_id'=>'tab_4','text'=>'Accounts',
+						'content_class'=>'tab-pane');
+		}
+
+		if (array_key_exists($tab_active, $tabs)) {
+			$tabs[$tab_active]['class'] = 'active';
+			$tabs[$tab_active]['content_class'] = 'tab-pane active';
+		}else{
+			$tabs['d_tab']['class'] = 'active';
+			$tabs['d_tab']['content_class'] = 'tab-pane active';
+		}
+
+
+		return $tabs;
+	}
+
+
 	public function load_templates($page='',$data=''){
 	if($this->session_check()==true || $this->customer_session_check()==true || $this->driver_session_check()==true) {
 		$this->load->view('admin-templates/header',$data);
@@ -1324,6 +1359,7 @@ if(isset($where_arry) || isset($like_arry)){
 				$data['result']=$this->user_model->getDriverUser($param2);
 			}   
 			//trip details
+			$active_tab = 'd_tab';//default profile tab
 	
 			if($param2!=''){
 				$tdate=date('Y-m-d');
@@ -1339,11 +1375,15 @@ if(isset($where_arry) || isset($like_arry)){
 					$fdate=$_REQUEST['from_pick_date'];
 					$todate=$_REQUEST['to_pick_date']; }
 					$data['trip_tab']='active';
+					$active_tab = 't_tab';//trip tab
 		
 				}
 				$data['trips']=$this->trip_booking_model->getDriverVouchers($param2,$fdate,$todate);
 				//$this->mysession->set('trips',$data['trips']);
 			}
+
+			$data['tabs'] = $this->set_up_driver_tabs($active_tab,$param2);
+
 			$data['driver_tab']='active';
 			//print_r($data['trips']);exit;
 			$data['title']='Driver Profile| '.PRODUCT_NAME;
