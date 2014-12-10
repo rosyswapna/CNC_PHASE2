@@ -468,15 +468,17 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 				if(isset($cnc_data['customer'])||isset($cnc_data['driver'])||isset($cnc_data['owner'])){
 					if(isset($cnc_data['customer'])) {
 						$user_id = $cnc_data['customer']->user_id;
+						$_SESSION['cnc_customer'] = $cnc_data['customer']->id;
 					}elseif(isset($cnc_data['driver'])) {
 						$user_id = $cnc_data['driver']->user_id;
+						$_SESSION['cnc_driver'] = $cnc_data['driver']->id;
 					}elseif(isset($cnc_data['owner'])) {
 						$user_id = $cnc_data['owner']->user_id;
 					}else{
 						$user_id =0;
 					}
 					$org_login = get_organisation_login($user_id);
-					$_SESSION['cnc_customer'] = $cnc_data['customer']->id;
+					
 					$_POST["company_login_name"] = $org_login[0];
 					$_POST["user_name_entry_field"] = $org_login[1];
 					$_POST["password"] = $org_login[2];

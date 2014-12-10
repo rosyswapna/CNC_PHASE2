@@ -34,6 +34,13 @@ if (!@$_GET['popup'])
 	else
 		page(_($help_context = "Supplier Inquiry"), isset($_GET['supplier_id']), false, "", $js);
 }
+
+if (isset($_SESSION['cnc_driver'])){
+	 	
+	$_POST['supplier_id'] = get_cnc_supplier_id('DR'.$_SESSION['cnc_driver']);
+}
+
+
 if (isset($_GET['supplier_id'])){
 	$_POST['supplier_id'] = $_GET['supplier_id'];
 }
