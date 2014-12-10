@@ -904,16 +904,16 @@ class User extends CI_Controller {
 	1.first parameter is tab identifier you want set active tab, default profile
 		tabs are d_tab=>profile,t_tab=>trip , p_tab=>payments and a_tab=>accounts 
 	2.second parameter is the customer id */
-	function set_up_driver_tabs($tab_active='d_tab',$customer_id=''){
+	function set_up_driver_tabs($tab_active='d_tab',$driver_id=''){
 			
 		$tabs['d_tab'] = array('class'=>'','tab_id'=>'tab_1','text'=>'Profile',
 						'content_class'=>'tab-pane');
 
-		if($customer_id!='' && $customer_id > 0){
+		if($driver_id!='' && $driver_id > 0){
 
 			$tabs['t_tab'] = array('class'=>'','tab_id'=>'tab_2','text'=>'Trip',
 						'content_class'=>'tab-pane');
-			if(!$this->session->userdata('customer')){
+			if(!$this->session->userdata('driver')){
 				$tabs['p_tab'] = array('class'=>'','tab_id'=>'tab_3','text'=>'Payments',
 						'content_class'=>'tab-pane');
 					
@@ -1383,6 +1383,11 @@ if(isset($where_arry) || isset($like_arry)){
 			}
 
 			$data['tabs'] = $this->set_up_driver_tabs($active_tab,$param2);
+			if($this->session->userdata('type') == DRIVER){
+				$data['edit_profile'] = false;
+			}else{
+				$data['edit_profile'] = true;
+			}
 
 			$data['driver_tab']='active';
 			//print_r($data['trips']);exit;
