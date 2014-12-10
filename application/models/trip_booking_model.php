@@ -3,77 +3,78 @@ class Trip_booking_model extends CI_Model {
 	
 	function getDriver($vehicle_id){
 
-	$this->db->from('vehicle_drivers');
-	$condition=array('vehicle_id'=>$vehicle_id,'organisation_id'=>$this->session->userdata('organisation_id'),'to_date'=>'9999-12-30');
-    $this->db->where($condition);
+		$this->db->from('vehicle_drivers');
+		$condition=array('vehicle_id'=>$vehicle_id,'organisation_id'=>$this->session->userdata('organisation_id'),'to_date'=>'9999-12-30');
+	    $this->db->where($condition);
 	
-    $results = $this->db->get()->result();
-	if(count($results)>0){
-	return $results[0]->driver_id;
+	    $results = $this->db->get()->result();
+		if(count($results)>0){
+		return $results[0]->driver_id;
+		}
 	}
-	}
+
 	function getTripBokkingDate($id){
 
-	$this->db->from('trips');
-	$condition=array('id'=>$id,'organisation_id'=>$this->session->userdata('organisation_id'));
-    $this->db->where($condition);
+		$this->db->from('trips');
+		$condition=array('id'=>$id,'organisation_id'=>$this->session->userdata('organisation_id'));
+	    $this->db->where($condition);
 	
-    $results = $this->db->get()->result();
-	if(count($results)>0){
-	return $results[0]->booking_date;
-	}
+	    $results = $this->db->get()->result();
+		if(count($results)>0){
+		return $results[0]->booking_date;
+		}
 	}
 
 	function getVehicle($id){
 
-	$this->db->from('vehicles');
-	$condition=array('id'=>$id,'organisation_id'=>$this->session->userdata('organisation_id'));
-    $this->db->where($condition);
+		$this->db->from('vehicles');
+		$condition=array('id'=>$id,'organisation_id'=>$this->session->userdata('organisation_id'));
+	    $this->db->where($condition);
 	
-    $results = $this->db->get()->result();
-	if(count($results)>0){
-	return $results;
-	}else{
-		return false;
-	}
+	    $results = $this->db->get()->result();
+		if(count($results)>0){
+		return $results;
+		}else{
+			return false;
+		}
 	}
 
 	function getDriverDetails($id){
 
-	$this->db->from('drivers');
-	$condition=array('id'=>$id,'organisation_id'=>$this->session->userdata('organisation_id'));
-    $this->db->where($condition);
+		$this->db->from('drivers');
+		$condition=array('id'=>$id,'organisation_id'=>$this->session->userdata('organisation_id'));
+	    $this->db->where($condition);
 	
-    $results = $this->db->get()->result();
-	if(count($results)>0){
-	return $results;
-	}
+	    $results = $this->db->get()->result();
+		if(count($results)>0){
+		return $results;
+		}
 	}
 
 	function checkTripVoucherEntry($trip_id){
 
-	$this->db->from('trip_vouchers');
-    $this->db->where('trip_id',$trip_id);
+		$this->db->from('trip_vouchers');
+	    $this->db->where('trip_id',$trip_id);
 	
-    $results = $this->db->get()->result();
-	if(count($results)>0){//print_r($results);
-	return $results;
-	}else{
-	return gINVALID;
-	}
+	    $results = $this->db->get()->result();
+		if(count($results)>0){//print_r($results);
+		return $results;
+		}else{
+		return gINVALID;
+		}
 	}
 
 	function  bookTrip($data) {
 	
-	$this->db->set('created', 'NOW()', FALSE);
-	$this->db->insert('trips',$data);
-	if($this->db->insert_id()>0){
-		return $this->db->insert_id();
-	}else{
-		return false;
-	}
+		$this->db->set('created', 'NOW()', FALSE);
+		$this->db->insert('trips',$data);
+		if($this->db->insert_id()>0){
+			return $this->db->insert_id();
+		}else{
+			return false;
+		}
 	 
-    }	
+    	}	
 	
 
 	//generate new voucher for a trip
@@ -115,25 +116,25 @@ class Trip_booking_model extends CI_Model {
 	}
 
 	function  updateTrip($data,$id) {
-	$this->db->where('id',$id );
-	$this->db->set('updated', 'NOW()', FALSE);
-	$this->db->update("trips",$data);
-	return true;
+		$this->db->where('id',$id );
+		$this->db->set('updated', 'NOW()', FALSE);
+		$this->db->update("trips",$data);
+		return true;
 	}
 
 	function getDetails($conditon ='',$orderby=''){
 
-	$this->db->from('trips');
-	if($conditon!=''){
-		$this->db->where($conditon);
-	}
+		$this->db->from('trips');
+		if($conditon!=''){
+			$this->db->where($conditon);
+		}
 	
-	if($orderby!=''){
-		$this->db->order_by($orderby);
-	}
- 	$results = $this->db->get()->result();//return $this->db->last_query();exit;
+		if($orderby!=''){
+			$this->db->order_by($orderby);
+		}
+	 	$results = $this->db->get()->result();//return $this->db->last_query();exit;
 		if(count($results)>0){
-		return $results;
+			return $results;
 
 		}else{
 			return false;
@@ -141,14 +142,14 @@ class Trip_booking_model extends CI_Model {
 	}
 	
 	function getTripVouchers(){
-$qry='SELECT TV.total_trip_amount,TV.start_km_reading,TV.end_km_reading,TV.end_km_reading,TV.releasing_place,TV.parking_fees,TV.toll_fees,TV.state_tax,TV.night_halt_charges,TV.fuel_extra_charges,TV.delivery_no,TV.invoice_no, T.id,T.pick_up_city,T.booking_date,T.drop_city,T.pick_up_date,T.pick_up_time,T.drop_date,T.drop_time,T.tariff_id FROM trip_vouchers AS TV LEFT JOIN trips AS T ON  TV.trip_id =T.id AND TV.organisation_id = '.$this->session->userdata('organisation_id').' WHERE T.organisation_id = '.$this->session->userdata('organisation_id');
-	$result=$this->db->query($qry);
-	$result=$result->result_array();
-	if(count($result)>0){
-	return $result;
-	}else{
-	return false;
-	}
+		$qry='SELECT TV.total_trip_amount,TV.start_km_reading,TV.end_km_reading,TV.end_km_reading,TV.releasing_place,TV.parking_fees,TV.toll_fees,TV.state_tax,TV.night_halt_charges,TV.fuel_extra_charges,TV.delivery_no,TV.invoice_no, T.id,T.pick_up_city,T.booking_date,T.drop_city,T.pick_up_date,T.pick_up_time,T.drop_date,T.drop_time,T.tariff_id FROM trip_vouchers AS TV LEFT JOIN trips AS T ON  TV.trip_id =T.id AND TV.organisation_id = '.$this->session->userdata('organisation_id').' WHERE T.organisation_id = '.$this->session->userdata('organisation_id');
+			$result=$this->db->query($qry);
+			$result=$result->result_array();
+			if(count($result)>0){
+			return $result;
+			}else{
+			return false;
+			}
 
 	}
 
@@ -164,54 +165,54 @@ $qry='SELECT TV.total_trip_amount,TV.start_km_reading,TV.end_km_reading,TV.end_k
 		if($fpdate==null && $tpdate!=null){
 		$qry.=' AND T.drop_date= "'.$tpdate.'"';
 				}
-	$result=$this->db->query($qry);
-	$result=$result->result_array();
-	if(count($result)>0){
-	return $result; 
-	}else{
-	return false;
-	}
+		$result=$this->db->query($qry);
+		$result=$result->result_array();
+		if(count($result)>0){
+		return $result; 
+		}else{
+		return false;
+		}
 
 	}
 
 	
 	function getVehicleVouchers($vehicle_id,$fpdate='',$tpdate=''){
-	$qry='SELECT C.name as customer,CG.name as company, TV.trip_starting_time,TV.trip_ending_time,TV.vehicle_tarif,TV.voucher_no,TV.total_trip_amount,TV.start_km_reading,TV.end_km_reading,TV.end_km_reading,TV.releasing_place,TV.parking_fees,TV.toll_fees,TV.state_tax,TV.night_halt_charges,TV.fuel_extra_charges, T.id,T.pick_up_city,T.drop_city,T.pick_up_date,T.pick_up_time,T.drop_date,T.drop_time,T.tariff_id FROM trip_vouchers AS TV LEFT JOIN trips AS T ON TV.trip_id =T.id LEFT JOIN customers AS C ON T.customer_id=C.id LEFT JOIN customer_groups AS CG ON T.customer_group_id=CG.id WHERE TV.organisation_id = '.$this->session->userdata('organisation_id').' AND T.vehicle_id='.$vehicle_id;
-		if($fpdate!=null && $tpdate!=null){ 
-		$qry.=' AND T.pick_up_date BETWEEN "'.$fpdate.'" AND "'.$tpdate .'"';
-				}
-		if($fpdate!=null && $tpdate==null){
-		$qry.=' AND T.pick_up_date= "'.$fpdate.'"';
-				}
-		if($fpdate==null && $tpdate!=null){
-		$qry.=' AND T.drop_date= "'.$tpdate.'"';
-				}
-	$result=$this->db->query($qry);
-	$result=$result->result_array();  //print_r($result);exit;
-	if(count($result)>0){
-	return $result;
-	}else{
-	return false;
-	}
+		$qry='SELECT C.name as customer,CG.name as company, TV.trip_starting_time,TV.trip_ending_time,TV.vehicle_tarif,TV.voucher_no,TV.total_trip_amount,TV.start_km_reading,TV.end_km_reading,TV.end_km_reading,TV.releasing_place,TV.parking_fees,TV.toll_fees,TV.state_tax,TV.night_halt_charges,TV.fuel_extra_charges, T.id,T.pick_up_city,T.drop_city,T.pick_up_date,T.pick_up_time,T.drop_date,T.drop_time,T.tariff_id FROM trip_vouchers AS TV LEFT JOIN trips AS T ON TV.trip_id =T.id LEFT JOIN customers AS C ON T.customer_id=C.id LEFT JOIN customer_groups AS CG ON T.customer_group_id=CG.id WHERE TV.organisation_id = '.$this->session->userdata('organisation_id').' AND T.vehicle_id='.$vehicle_id;
+			if($fpdate!=null && $tpdate!=null){ 
+			$qry.=' AND T.pick_up_date BETWEEN "'.$fpdate.'" AND "'.$tpdate .'"';
+					}
+			if($fpdate!=null && $tpdate==null){
+			$qry.=' AND T.pick_up_date= "'.$fpdate.'"';
+					}
+			if($fpdate==null && $tpdate!=null){
+			$qry.=' AND T.drop_date= "'.$tpdate.'"';
+					}
+		$result=$this->db->query($qry);
+		$result=$result->result_array();  //print_r($result);exit;
+		if(count($result)>0){
+		return $result;
+		}else{
+		return false;
+		}
 
 	}
 	function getCustomerVouchers($customer_id,$fpdate='',$tpdate=''){
-$qry='SELECT TV.total_trip_amount,TV.start_km_reading,TV.end_km_reading,TV.end_km_reading,TV.releasing_place,TV.parking_fees,TV.toll_fees,TV.state_tax,TV.night_halt_charges,TV.fuel_extra_charges, T.id,T.pick_up_city,T.drop_city,T.pick_up_date,T.pick_up_time,T.drop_date,T.drop_time,T.tariff_id FROM trip_vouchers AS TV LEFT JOIN trips AS T ON  TV.trip_id =T.id AND TV.organisation_id = '.$this->session->userdata('organisation_id').' WHERE T.organisation_id = '.$this->session->userdata('organisation_id').' AND T.customer_id='.$customer_id;
-	if($fpdate!=null && $tpdate!=null){ 
-		$qry.=' AND T.pick_up_date BETWEEN "'.$fpdate.'" AND "'.$tpdate .'"';
-				}
-		if($fpdate!=null && $tpdate==null){
-		$qry.=' AND T.pick_up_date= "'.$fpdate.'"';
-				}
-		if($fpdate==null && $tpdate!=null){
-		$qry.=' AND T.drop_date= "'.$tpdate.'"';
-				}
-	$result=$this->db->query($qry);
-	$result=$result->result_array();
-	if(count($result)>0){
-	return $result;
-	}else{
-	return false;
+		$qry='SELECT TV.total_trip_amount,TV.start_km_reading,TV.end_km_reading,TV.end_km_reading,TV.releasing_place,TV.parking_fees,TV.toll_fees,TV.state_tax,TV.night_halt_charges,TV.fuel_extra_charges, T.id,T.pick_up_city,T.drop_city,T.pick_up_date,T.pick_up_time,T.drop_date,T.drop_time,T.tariff_id FROM trip_vouchers AS TV LEFT JOIN trips AS T ON  TV.trip_id =T.id AND TV.organisation_id = '.$this->session->userdata('organisation_id').' WHERE T.organisation_id = '.$this->session->userdata('organisation_id').' AND T.customer_id='.$customer_id;
+			if($fpdate!=null && $tpdate!=null){ 
+				$qry.=' AND T.pick_up_date BETWEEN "'.$fpdate.'" AND "'.$tpdate .'"';
+						}
+				if($fpdate!=null && $tpdate==null){
+				$qry.=' AND T.pick_up_date= "'.$fpdate.'"';
+						}
+				if($fpdate==null && $tpdate!=null){
+				$qry.=' AND T.drop_date= "'.$tpdate.'"';
+						}
+			$result=$this->db->query($qry);
+			$result=$result->result_array();
+			if(count($result)>0){
+			return $result;
+			}else{
+			return false;
 	}
 
 	}

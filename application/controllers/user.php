@@ -1165,7 +1165,7 @@ public function profile() {
 		
 			if($param2!=''){
 			
-			$data['trips']=$this->trip_booking_model->getDriverVouchers($param2);
+				$data['trips']=$this->trip_booking_model->getDriverVouchers($param2);
 			}
 			
 			//sample ends
