@@ -63,11 +63,11 @@ start_table_left(TABLESTYLE_NOBORDER);
 start_row();
 
 if (!@$_GET['popup']){
-	if(isset($_GET['DriverPaymentInquiry'])){
+	if(isset($_GET['DriverPaymentInquiry']) || isset($_SESSION['cnc_driver'])){
 		hidden('supplier_id');
 		$_POST['supplier_type'] = CNC_DRIVER;
 	}
-	if(isset($_GET['OwnerPaymentInquiry'])){
+	elseif(isset($_GET['OwnerPaymentInquiry'])){
 		hidden('supplier_id');
 		$_POST['supplier_type'] = CNC_VEHICLE_OWNER;
 	}
