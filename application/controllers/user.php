@@ -121,6 +121,8 @@ class User extends CI_Controller {
 		}elseif($this->driver_session_check()==true){
 			if($param1=='driver-profile'&&($param2== ''|| is_numeric($param2))){
 				$this->ShowDriverProfile($param1,$param2);
+			}elseif($param1=='trips'){
+				$this->Trips($param2);
 			}
 		}else{
 			$this->notAuthorized();
@@ -600,7 +602,7 @@ class User extends CI_Controller {
 	public function Trips($param2){
 
 
-		if($this->session_check()==true || $this->customer_session_check()==true) {
+		if($this->session_check()==true || $this->customer_session_check()==true || $this->driver_session_check()==true) {
 			$like_arry='';
 			$where_arry='';
 			$tbl="trips";
@@ -622,7 +624,10 @@ class User extends CI_Controller {
 			if($this->session->userdata('customer')){
 				$qry .= ' AND T.customer_id='.$this->session->userdata('customer')->id;
 			}
-
+			//driver session check
+			if($this->session->userdata('driver')){
+				$qry .= ' AND T.driver_id='.$this->session->userdata('driver')->id;
+			}
 			if($param2=='1' ){
 				$param2='0';
 			}
@@ -776,6 +781,8 @@ class User extends CI_Controller {
 				'drivers' => '','trip_status_id' => '','cgroups' => '','customer' => '');
 		if($this->session->userdata('type')==CUSTOMER){
 			$inputs['vehicles']=$inputs['drivers']=$inputs['cgroups']=$inputs['customer']=' hide-me';
+		}else if($this->session->userdata('type')==DRIVER){
+			$inputs['vehicles']=$inputs['drivers']=$inputs['customer']=' hide-me';
 		}
 		return $inputs;
 		
@@ -786,6 +793,8 @@ class User extends CI_Controller {
 		
 		if($this->session->userdata('type')==CUSTOMER){
 			$actions = array();
+		}elseif($this->session->userdata('type')==DRIVER){
+			$actions = array('new_voucher');
 		}else{
 			$actions = array('edit','complete','new_voucher','edit_voucher');
 		}
