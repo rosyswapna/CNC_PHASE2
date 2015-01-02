@@ -110,6 +110,7 @@ class Trip_booking extends CI_Controller {
 					$data['guest_id']=gINVALID;
 				}
 
+
 				$this->form_validation->set_rules('customer','Customer name','trim|xss_clean');
 				$this->form_validation->set_rules('email','Email','trim|xss_clean|valid_email|');
 				$this->form_validation->set_rules('mobile','Mobile','trim|regex_match[/^[0-9]{10}$/]|numeric|xss_clean');
@@ -286,22 +287,24 @@ class Trip_booking extends CI_Controller {
 				redirect(base_url().'organization/front-desk/trip-booking/'.$data['trip_id']);
 			}else{
 				if(isset($data['guestname']) && $_REQUEST['guestname']!='' ){
-				if(isset($_REQUEST['guest_id']) && $_REQUEST['guest_id']==gINVALID){
-				
-				$dbdata1=array('name'=>$data['guestname'],'email'=>$data['guestemail'],'mobile'=>$data['guestmobile'],'registration_type_id'=>$data['registration_type_id']);
-				$data['guest_id']=$this->customers_model->addCustomer($dbdata1);
-				//------------fa module integration code starts here-----
-				//save customer in fa table
+					
+					if(isset($_REQUEST['guest_id']) && $_REQUEST['guest_id']==gINVALID){
+					
+						$dbdata1=array('name'=>$data['guestname'],'email'=>$data['guestemail'],'mobile'=>$data['guestmobile'],'registration_type_id'=>$data['registration_type_id']);
+						//echo "<pre>";print_r($dbdata1);echo "</pre>";exit;
+						$data['guest_id']=$this->customers_model->addGuest($dbdata1);
+						//------------fa module integration code starts here-----
+						//save customer in fa table
 
-				$this->load->model("account_model");
-				$fa_customer = $this->account_model->add_fa_customer($data['guest_id'],"C");
+						$this->load->model("account_model");
+						$fa_customer = $this->account_model->add_fa_customer($data['guest_id'],"C");
 
-				//-----------fa code ends here---------------------------
+						//-----------fa code ends here---------------------------
 
-				}else{
-				$data['guest_id']=$_REQUEST['guest_id'];
+					}else{
+					$data['guest_id']=$_REQUEST['guest_id'];
 
-				}
+					}
 				}else{
 					$data['guest_id']=gINVALID;
 				}

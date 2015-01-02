@@ -60,6 +60,42 @@ class Customers_model extends CI_Model {
 	}
 */
 
+	public function addGuest($data){
+		$data['organisation_id']=$this->session->userdata('organisation_id');
+		$data['user_id']=$this->session->userdata('id');
+		
+ 		if($data['mobile']!=''){
+		$condition['mobile']=$data['mobile'];
+		$condition['organisation_id']=$this->session->userdata('organisation_id');
+		$res=$this->getCustomerDetails($condition);
+		if(count($res)==0){
+			$this->db->set('created', 'NOW()', FALSE);
+			$this->db->insert('customers',$data);
+			$insert_id=$this->db->insert_id();
+
+			if($insert_id > 0){
+
+				return $insert_id;
+			}else{
+				return false;
+			}
+		}else{
+			return $res[0]['id'];
+		}
+	
+		}else{
+			$this->db->set('created', 'NOW()', FALSE);
+			$this->db->insert('customers',$data);
+			$insert_id=$this->db->insert_id();
+
+			if($insert_id > 0){
+				return $insert_id;
+			}else{
+				return false;
+			}
+
+		}
+	}
 
 	public function addCustomer($data,$login=false){
 
